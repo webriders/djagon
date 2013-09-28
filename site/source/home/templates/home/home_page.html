@@ -1,5 +1,40 @@
 {% extends 'common/base.html' %}
 
+{% load static %}
+{% load compress %}
+
+{% block static %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'home/css/home_page.scss' %}"/>
+    {% endcompress %}
+
+    {% compress js %}
+        <script type="text/javascript"></script>
+    {% endcompress %}
+{% endblock %}
+
 {% block content %}
-Welcome to Djagon home page!
+    <aside class="intro">
+        <h3 class="title">What is Djagon?</h3>
+        <p>Djagon is browser-based multiplayer for
+            <a href="http://shop.mattel.com/family/index.jsp?categoryId=3784337" target="_blank">Uno</a> -
+            famous card game from Mattel.
+        </p>
+        <p>But why we say that it has flavor of madness?</p>
+        <p>
+            Because we play it by our own <a href="#" onclick="alert('In progress ...')">dynamic rules</a>
+            (don't worry, just a few differences).
+        </p>
+    </aside>
+
+    <div class="cards">
+        <div class="one"></div>
+        <div class="two"></div>
+        <div class="three"></div>
+    </div>
+
+    <div class="actions">
+        <button class="create-game">Create game</button>
+        <button class="join-game">Join random game</button>
+    </div>
 {% endblock %}

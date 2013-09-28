@@ -1,0 +1,45 @@
+@import "compass/reset";
+@import "compass/css3";
+
+body, html {
+    height: 100%;
+}
+
+body {
+    font: 14px/1.23 Arial, Liberation Sans, sans-serif;
+    background-color: #ee1c25;
+    color: #fff;
+}
+
+a {
+    color: #ffab00;
+    @include transition(color .25s);
+
+    &:hover {
+        color: #ffc400;
+    }
+}
+
+.page-container {
+    height: 100%;
+    position: relative;
+    @include background-image(radial-gradient(center, ellipse cover, #ee1c25 0%, #a61b1e 100%));
+}
+
+.page-footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 40px;
+    @include box-sizing(border-box);
+
+    .copyrights {
+        float: left;
+        margin-right: 40px;
+    }
+
+    .made-by {
+        float: right;
+    }
+}
