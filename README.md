@@ -12,7 +12,10 @@ All rights for the Uno card game belongs to [Mattel](http://en.wikipedia.org/wik
 
 Requisites
 ----------
-You need to have Python, pip, virtualenv and [libevent](http://www.libevent.org/) installed on your system.
+You need to have Python (and python-dev), pip, virtualenv and [libevent](http://www.libevent.org/) installed on your system.
+
+python.dev installation tips:
+- Debian/Ubuntu: `sudo apt-get install python-dev`
 
 libevent installation tips:
 - Debian/Ubuntu: `sudo apt-get install libevent-dev`
@@ -43,6 +46,8 @@ Don't worry, it's still quite easy.
         virtualenv var/virtualenv/djagon
         source var/virtualenv/djagon/bin/activate
         pip install -r requirements.pip
+
+If something went wrong with pip install - probably it's Gevent, [read more]() about it's installation.
 
 2. Setup project:
         cp conf/settings/local.py.dev-sample conf/settings/local.py  # this is an example settings file
