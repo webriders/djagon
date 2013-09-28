@@ -52,5 +52,5 @@ You need to setup & run 2 servers: one for Django site, second for WebSockets
 
 Next example is for development / quick start:
 
-    ./manage.py runserver
-    gunicorn --worker-class=socketio.sgunicorn.GeventSocketIOWorker --bind=0.0.0.0:9000 --debug conf.wsgi:application
+    ./manage.py runserver &
+    gunicorn --worker-class=socketio.sgunicorn.GeventSocketIOWorker --bind=0.0.0.0:9000 --debug conf.wsgi:application &
