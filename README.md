@@ -47,7 +47,7 @@ Don't worry, it's still quite easy.
         source var/virtualenv/djagon/bin/activate
         pip install -r requirements.pip
 
-If something went wrong with pip install - probably it's Gevent, [read more]() about it's installation.
+If something went wrong with pip install - probably it's Gevent, [read more](http://www.gevent.org/) about it's installation.
 
 2. Setup project:
         cp conf/settings/local.py.dev-sample conf/settings/local.py  # this is an example settings file
