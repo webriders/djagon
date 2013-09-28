@@ -30,3 +30,6 @@ class UnoDeck(object):
         self.deck.reverse()
         self.stack = self.deck + self.stack
         self.deck = [top_card]
+
+    def get_top_card(self):
+        return self.deck[-1]

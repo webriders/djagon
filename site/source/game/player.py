@@ -8,3 +8,10 @@ class Player(object):
         self.name = name
         self.hand = hand
         self.lamp = False
+
+    def draw_cards(self, cards):
+        self.hand = self.hand + cards
+
+    @property
+    def cards_number(self):
+        return len(self.hand)
