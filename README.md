@@ -7,7 +7,7 @@ And at the first place - to make it fun and entertaining!
 
 Requisites
 ----------
-You need to have Python, pip, virtualenv and [libevent](http://www.libevent.org/) to be installed on your system.
+You need to have Python, pip, virtualenv and [libevent](http://www.libevent.org/) installed on your system.
 
 libevent installation tips:
 - Debian/Ubuntu: `sudo apt-get install libevent-dev`
