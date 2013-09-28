@@ -28,7 +28,7 @@ First of all, go to your workspace dir and clone the Git repo:
 
     git clone https://github.com/webriders/djagon
 
-Notice: all further commands should be executed within djagon/site/ directory:
+**Notice:** all further commands should be executed within djagon/site/ directory:
 
     cd djagon/site/
 
