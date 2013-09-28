@@ -100,7 +100,9 @@
             text-shadow: 1px 2px 0 rgba(0, 0, 0, .6);
             box-shadow: 4px 4px 10px rgba(0, 0, 0, .3);
             outline: none;
+            text-decoration: none;
             @include transition(all .25s);
+            @include box-sizing(border-box);
 
             &::-moz-focus-inner {
                 border: 0;
