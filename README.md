@@ -2,8 +2,13 @@ Djagon
 ======
 This is DjangoDash 2013 contest project (why "Djagon"? Let's say that it means something :)
 
-The idea of this project is to implement online multiplayer "UNO!" card game.
+The idea of this project is to implement online multiplayer "Uno" card game.
 And at the first place - to make it fun and entertaining!
+
+![UNO header](http://i.imgur.com/UHQD55q.jpg)
+
+We are doing this just for fun, without any selfish purposes nor for profit.
+All rights for the Uno card game belongs to [Mattel](http://en.wikipedia.org/wiki/Mattel).
 
 Requisites
 ----------
