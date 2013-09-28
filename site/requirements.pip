@@ -3,4 +3,4 @@ South==0.8.2
 django-compressor==1.3
 pyScss==1.1.5
 gunicorn==18.0
--e git+https://github.com/abourget/gevent-socketio.git#egg=gevent-socketio
+-e git+https://github.com/abourget/gevent-socketio.git@99f96b0b379b87a256e4f9092e513b33bbb2836d#egg=gevent_socketio-dev
