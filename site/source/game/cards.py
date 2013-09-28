@@ -21,6 +21,3 @@ def generate_cards():
                 'value': val,
             })
     return cards + wild_cards + draw_four_cards
-
-
-cards = generate_cards()

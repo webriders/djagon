@@ -1,16 +1,14 @@
 from django.core.urlresolvers import reverse
 from django.views.generic.base import RedirectView, TemplateView
-from source.game.models import GameTable
-
-import uuid
+from source.game.uno_game import UnoGame
 
 
 class CreateGameView(RedirectView):
 
     def get_redirect_url(self, **kwargs):
-        game_id = str(uuid.uuid4())[:6].upper()
-        game = GameTable.objects.create(game_id=game_id)
-        return reverse('djagon:game-play', args=(game_id,))
+        game = UnoGame()
+        game.save()
+        return reverse('djagon:game-play', args=(game.game_id,))
 
 
 create_game = CreateGameView.as_view()
