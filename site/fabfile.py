@@ -6,7 +6,7 @@ SITE_NAME = 'djagon'
 SITE_ROOT = os.path.dirname(__file__)
 SOURCE_ROOT = os.path.join(SITE_ROOT, 'source')
 SETTINGS_ROOT = os.path.join(SITE_ROOT, 'conf/settings')
-ACTIVATE_VIRTUALENV = '. {}'.format(os.path.join(SITE_ROOT, 'var/virtualenv/%s/bin/activate' % SITE_NAME))
+ACTIVATE_VIRTUALENV = '. %s' % os.path.join(SITE_ROOT, 'var/virtualenv/%s/bin/activate' % SITE_NAME)
 SUPERVISOR_CONFIG = os.path.join(SITE_ROOT, 'conf/supervisor/supervisord.conf')
 
 
