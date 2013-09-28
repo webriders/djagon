@@ -12,14 +12,14 @@ supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 [supervisorctl]
 serverurl=unix:///home/sites/djagon/site/var/run/supervisor.sock
 
-[program:djagon]
+[program:site]
 directory=/home/sites/djagon/site/
 command=/home/sites/djagon/site/var/virtualenv/djagon/bin/gunicorn --bind=127.0.0.1:8000 conf.wsgi:application
 autostart=true
 autorestart=true
 redirect_stderr=true
 
-[program:djagon-game]
+[program:game]
 directory=/home/sites/djagon/site/
 command=/home/sites/djagon/site/var/virtualenv/djagon/bin/gunicorn --worker-class=socketio.sgunicorn.GeventSocketIOWorker --bind=0.0.0.0:9000 conf.wsgi:application
 autostart=true

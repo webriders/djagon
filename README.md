@@ -10,8 +10,8 @@ And at the first place - to make it fun and entertaining!
 We are doing this just for fun, without any selfish purposes nor for profit.
 All rights for the Uno card game belongs to [Mattel](http://en.wikipedia.org/wiki/Mattel).
 
-Requisites
-----------
+Requirements
+------------
 You need to have Python (and python-dev), pip, virtualenv and [libevent](http://www.libevent.org/) installed on your system.
 
 python.dev installation tips:
@@ -21,8 +21,8 @@ libevent installation tips:
 - Debian/Ubuntu: `sudo apt-get install libevent-dev`
 - Mac OS X: `brew install libevent`
 
-Install
--------
+Installation
+------------
 
 First of all, go to your workspace dir and clone the Git repo:
 
@@ -32,24 +32,16 @@ First of all, go to your workspace dir and clone the Git repo:
 
     cd djagon/site/
 
-### Easy way
+Create, activate and setup virtualenv:
 
-Use Fabric (we assume that you have already installed it):
-
-    fab install
-
-### Advanced way
-
-Don't worry, it's still quite easy.
-
-1. Create, activate and setup virtualenv:
         virtualenv var/virtualenv/djagon
         source var/virtualenv/djagon/bin/activate
         pip install -r requirements.pip
 
 If something went wrong with pip install - probably it's Gevent, [read more](http://www.gevent.org/) about it's installation.
 
-2. Setup project:
+Setup project:
+
         cp conf/settings/local.py.dev-sample conf/settings/local.py  # this is an example settings file
         nano conf/settings/local.py # setup there private settings (DB, secret keys, etc.)
                                     # there is a setting: GAME_SOCKET_URL - this is URL where you run
@@ -64,3 +56,27 @@ Next example is for development / quick start:
 
     ./manage.py runserver &
     gunicorn --worker-class=socketio.sgunicorn.GeventSocketIOWorker --bind=0.0.0.0:9000 --debug conf.wsgi:application &
+
+Use Supervisor
+--------------
+
+You may also use Supervisor:
+
+    pip install supervisor
+    cp conf/supervisor/supervisord.conf.dev-sample conf/supervisor/supervisord.conf  # copy sample config
+    nano conf/supervisor/supervisord.conf  # edit config - adjust paths
+    supervisord -c conf/supervisor/supervisord.conf  # start supervisor process
+
+At any time you may check current status:
+
+    supervisorctl -c conf/supervisor/supervisord.conf  # start supervisor console
+
+Use Fabric
+----------
+We use Fabric script for deployment and restart (may be more commands in future):
+
+    fab --list   # list available commands
+    fab deploy   # make Git pull, migrate DB, collect static, restart gunicorn processes
+    fab restart  # restart gunicorn processes only
+
+But you need to install & setup Supervisor first (it's used by Fabric script).
