@@ -20,7 +20,6 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.abspath(os.path.join(SITE_ROOT, 'var', 'static'))
 STATIC_URL = '/static/'
 
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,7 +66,6 @@ INSTALLED_APPS = (
     'compressor',
     'django.contrib.admin',
 )
-
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
