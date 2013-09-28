@@ -7,4 +7,4 @@ gunicorn==18.0
 jsonfield==0.9.19
 jsonpickle==0.6.1
 psycopg2==2.5.1
-
+ordereddict==1.1

@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from source.game.uno_deck import UnoDeck
 from source.game.player import Player
 from source.game.models import GameTable
@@ -6,6 +5,11 @@ from source.game.models import GameTable
 import jsonpickle
 import random
 import uuid
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 
 class UnoGame(object):

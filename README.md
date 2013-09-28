@@ -3,23 +3,29 @@ Djagon
 This is DjangoDash 2013 contest project (why "Djagon"? Let's say that it means something :)
 
 The idea of this project is to implement online multiplayer "Uno" card game.
-And at the first place - to make it fun and entertaining!
+But at the first place to make it fun and entertaining! (thus we have changed the rules a bit)
 
 ![UNO header](http://i.imgur.com/UHQD55q.jpg)
 
 We are doing this just for fun, without any selfish purposes nor for profit.
-All rights for the Uno card game belongs to [Mattel](http://en.wikipedia.org/wiki/Mattel).
+All rights of the Uno card game belongs to [Mattel](http://en.wikipedia.org/wiki/Mattel).
+
 
 Requirements
 ------------
-You need to have Python (and python-dev), pip, virtualenv and [libevent](http://www.libevent.org/) installed on your system.
+You need to have installed on your system:
+ - Python (and python-dev)
+ - pip
+ - virtualenv
+ - [libevent](http://www.libevent.org/) (for gevent-socketio)
+ - postgresql & libpq-dev (for psycopg2)
+ - sass & compass (we just can't work without SCSS anymore)
 
-python.dev installation tips:
-- Debian/Ubuntu: `sudo apt-get install python-dev`
+Debian/Ubuntu installation tips:
 
-libevent installation tips:
-- Debian/Ubuntu: `sudo apt-get install libevent-dev`
-- Mac OS X: `brew install libevent`
+    sudo apt-get install python-dev libevent-dev postgresql libpq-dev
+    gem install sass compass  # we assume that you already have Ruby & Gem
+
 
 Installation
 ------------
@@ -57,6 +63,7 @@ Next example is for development / quick start:
     ./manage.py runserver &
     gunicorn --worker-class=socketio.sgunicorn.GeventSocketIOWorker --bind=0.0.0.0:9000 --debug conf.wsgi:application &
 
+
 Use Supervisor
 --------------
 
@@ -70,6 +77,7 @@ You may also use Supervisor:
 At any time you may check current status:
 
     supervisorctl -c conf/supervisor/supervisord.conf  # start supervisor console
+
 
 Use Fabric
 ----------
