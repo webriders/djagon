@@ -36,17 +36,17 @@ Don't worry, it's still quite easy.
 
 1. Create, activate and setup virtualenv:
 
-    virtualenv var/virtualenv/djagon
-    source var/virtualenv/djagon/bin/activate
-    pip install -r requirements.pip
+        virtualenv var/virtualenv/djagon
+        source var/virtualenv/djagon/bin/activate
+        pip install -r requirements.pip
 
 2. Setup project:
 
-    cp conf/settings/local.py.dev-sample conf/settings/local.py  # this is an example settings file
-    nano conf/settings/local.py # setup there private settings (DB, secret keys, etc.)
-                                # there is a setting: GAME_SOCKET_URL - this is URL where you run
-                                # gunicorn + gevent + socketio server, read below
-    ./manage.py syncdb --migrate
+        cp conf/settings/local.py.dev-sample conf/settings/local.py  # this is an example settings file
+        nano conf/settings/local.py # setup there private settings (DB, secret keys, etc.)
+                                    # there is a setting: GAME_SOCKET_URL - this is URL where you run
+                                    # gunicorn + gevent + socketio server, read below
+        ./manage.py syncdb --migrate
 
 Run
 ---
