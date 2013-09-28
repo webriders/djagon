@@ -12,11 +12,11 @@ body {
 }
 
 a {
-    color: #ffab00;
+    color: #fa0;
     @include transition(color .25s);
 
     &:hover {
-        color: #ffc400;
+        color: lighten(#fa0, 20);
     }
 }
 
