@@ -92,14 +92,21 @@ class GameMechanics(object):
     def handle_throw_in(self, player, card):
         top_card = self.game.deck.get_top_card()
         if not (card['color'] == top_card['color'] and card['value'] == top_card['value']):
+            self.send_user_message("error", "You cheat!")
             return # you cheat, guy
 
+        player.hand.pop(card)
         self.game.deck.put_card(card)
         self.game.current_lead = player.id
         self.game.lead_to_next_player()
         self._send_game_running()
 
-    def send_user_message(self, message_type, message_content):
+    def broadcast_user_message(self, message_type, message_content):
+        for sessid, socket in self.socket.server.sockets.iteritems():
+            self.send_user_message(message_type, message_content, socket)
+
+    def send_user_message(self, message_type, message_content, socket=None):
+        socket = socket or self.socket
         pkt = {
             "type": "event",
             "name": self.EVENT_USER_MESSAGE,
@@ -109,8 +116,7 @@ class GameMechanics(object):
             },
             "endpoint": self.ns_name
         }
-        for sessid, socket in self.socket.server.sockets.iteritems():
-            socket.send_packet(pkt)
+        socket.send_packet(pkt)
 
     def handle_turn(self, player, card):
         if not self.turn_is_fair(card):
@@ -159,4 +165,4 @@ class GameMechanics(object):
     def announce_score(self):
         self.game.summarize_score()
         for player in self.game.players.values():
-            self.send_user_message('info', 'Player %s scored %s points' % player.score)
+            self.broadcast_user_message('info', 'Player %s scored %s points' % player.score)
