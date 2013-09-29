@@ -3,6 +3,8 @@ from socketio.sdjango import namespace
 from source.game.mechanics import GameMechanics
 from source.game.models import GameTable
 
+from socketio.mixins import BroadcastMixin
+
 
 @namespace('/game')
 class GameNamespace(BaseNamespace):
@@ -11,9 +13,6 @@ class GameNamespace(BaseNamespace):
         game = GameTable.get_game(game_id)
         if game is None: return # temp
 
-        player = game.join_game()
-        self.session['game_id'] = game_id
-        self.session['player_id'] = player.id
+        game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
+        game_mechanics.on_join_game()
 
-        game_mechanics = GameMechanics(game, self.socket, self.ns_name)
-        game_mechanics._send_initial_game_state()
