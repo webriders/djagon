@@ -37,6 +37,9 @@ class PlayGameView(TemplateView):
         if game.players_number >= Game.PLAYERS_LIMIT:
             messages.warning(request, "Players number is limited in this game. Please, create yours!")
             return HttpResponseRedirect(reverse('djagon:home'))
+        if not game.status in [game.STATUS_OPEN, game.STATUS_IDLE]:
+            messages.warning(request, "This game has already been started")
+            return HttpResponseRedirect(reverse('djagon:home'))
 
         return super(PlayGameView, self).get(self, request, *args, **kwargs)
 
