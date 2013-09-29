@@ -7,6 +7,8 @@ from source.game.game import Game
 
 
 class CreateGameView(RedirectView):
+    permanent = False
+
     def get_redirect_url(self, **kwargs):
         game = Game()
         game.save()
