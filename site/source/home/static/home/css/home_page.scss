@@ -61,7 +61,7 @@
             top: -136px;
             @include transform(rotate(-15deg));
             @include simple-card-animation(rotate-first);
-            background: url(../img/draw_two.png) no-repeat center;
+            background: url(../img/draw_two.png) no-repeat center #fff;
         }
 
         .two {
@@ -69,13 +69,13 @@
             top: -136px;
             @include transform(rotate(15deg));
             @include simple-card-animation(rotate-last);
-            background: url(../img/7.png) no-repeat center;
+            background: url(../img/7.png) no-repeat center #fff;
         }
 
         .three {
             left: -91px;
             top: -160px;
-            background: url(../img/card_back.png) no-repeat center;
+            background: url(../img/card_back.png) no-repeat center #fff;
         }
     }
 
