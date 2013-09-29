@@ -1,6 +1,6 @@
 from socketio.namespace import BaseNamespace
 from socketio.sdjango import namespace
-from game.models import GameTable
+from source.game.models import GameTable
 
 
 @namespace('/game')

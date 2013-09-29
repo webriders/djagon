@@ -3,8 +3,6 @@ import random
 
 
 class UnoDeck(object):
-    stack = None  # hidden cards
-    deck = None  # shown cards
 
     def __init__(self):
         self.stack = generate_cards()

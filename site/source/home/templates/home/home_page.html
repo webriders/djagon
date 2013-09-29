@@ -35,6 +35,6 @@
 
     <div class="actions">
         <a href="{% url 'djagon:game-create' %}" class="create-game">Create game</a>
-        <button class="join-game">Join random game</button>
+        <a href="{% url 'djagon:game-random' %}" class="join-game">Join random game</a>
     </div>
 {% endblock %}

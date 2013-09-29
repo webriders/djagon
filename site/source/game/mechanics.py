@@ -1,8 +1,8 @@
 from source.game.player import Player
-from source.game.uno_game import UnoGame
+from source.game.game import Game
 
 
-class UnoMechanics(object):
+class GameMechanics(object):
 
     SPECIFIC_CARD_HANDLERS = {
         '7': 'handle_seven',
@@ -20,7 +20,7 @@ class UnoMechanics(object):
     EVENT_UPDATE_GAME_STATE = 'update_game_state'
 
     def __init__(self, game, socket, ns_name):
-        assert isinstance(game, UnoGame)
+        assert isinstance(game, Game)
         self.game = game
         self.socket = socket
         self.ns_name = ns_name
