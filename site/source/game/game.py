@@ -116,3 +116,8 @@ class Game(object):
 
     def is_active(self):
         return self.status == GameTable.STATUS_ACTIVE
+
+    def summarize_score(self):
+        for player in self.player.values():
+            player.count_score()
+        self.save()

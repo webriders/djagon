@@ -4,6 +4,8 @@ from source.game.cards import get_card_by_id
 from source.game.mechanics import GameMechanics
 from source.game.models import GameTable
 
+from socketio.mixins import BroadcastMixin
+
 
 @namespace('/game')
 class GameNamespace(BaseNamespace):

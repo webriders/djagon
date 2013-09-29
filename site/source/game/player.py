@@ -1,6 +1,8 @@
 import uuid
 from django.utils.http import urlquote
 
+from source.game.cards import get_cards_score
+
 
 class Player(object):
     AVATAR_URL = 'http://robohash.org/'
@@ -11,6 +13,7 @@ class Player(object):
         self.hand = hand or []
         self.lamp = False
         self.sessid = sessid
+        self.score = 0
 
     def draw_cards(self, cards):
         self.hand = self.hand + cards
@@ -34,7 +37,8 @@ class Player(object):
             'id': self.id,
             'name': self.name,
             'avatar': self.avatar,
-            'lamp': self.lamp
+            'lamp': self.lamp,
+            'score': self.score,
         }
         if self.id == player_id:
             data['cards'] = self.hand
@@ -42,3 +46,7 @@ class Player(object):
         else:
             data['cards'] = [card["id"] for card in self.hand]
         return data
+
+    def count_score(self):
+        for card in self.hand:
+            self.score += get_cards_score(card)

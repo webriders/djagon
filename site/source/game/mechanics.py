@@ -1,7 +1,6 @@
 from source.game.packets import GameState, InitialGameState
 from source.game.player import Player
 from source.game.game import Game
-from source.game.cards import get_card_by_id
 
 
 class GameMechanics(object):
@@ -101,7 +100,8 @@ class GameMechanics(object):
             },
             "endpoint": self.ns_name
         }
-        self.socket.send_packet(pkt)
+        for sessid, socket in self.socket.server.sockets.iteritems():
+            socket.send_packet(pkt)
 
 
     def handle_turn(self, player, card):
@@ -147,3 +147,7 @@ class GameMechanics(object):
         next_player = self.game.lead_to_next_player()
         cards = self.game.deck.draw_cards(4)
         next_player.draw_cards(cards)
+
+    def announce_score(self):
+        for player in self.game.players.values():
+            self.send_user_message('info', 'Player %s scored %s points' % player.score)
