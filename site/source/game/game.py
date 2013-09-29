@@ -16,7 +16,6 @@ class Game(object):
     INIT_CARDS_NUMBER = 5
     DIRECTION_DIRECT = 1
 
-    players = OrderedDict()
     current_lead = 0  # index of current player
 
     last_turn_cheated = False
@@ -26,6 +25,7 @@ class Game(object):
         self.status = GameTable.STATUS_IDLE
         self.direction = self.DIRECTION_DIRECT
         self.deck = UnoDeck()
+        self.players = OrderedDict()
 
     def save(self):
         game, created = GameTable.objects.get_or_create(game_id=self.game_id)
@@ -35,8 +35,7 @@ class Game(object):
         game.save()
 
     def join_game(self):
-        if self.status == GameTable.STATUS_IDLE:
-            self.status = GameTable.STATUS_OPEN
+        self.status = GameTable.STATUS_OPEN
         default_name = "Player_%s" % (self.players_number+1)
         player = Player(name=default_name)
         self.players[player.id] = player
