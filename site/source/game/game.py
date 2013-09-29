@@ -92,11 +92,12 @@ class Game(object):
         return self.players[self.current_lead]
 
     def get_next_player(self):
-        player_index = (self.current_lead+self.direction) % self.players_number
-        return self.players[player_index]
+        current_lead_index = self.players.keys().index(self.current_lead)
+        player_index = (current_lead_index+self.direction) % self.players_number
+        return self.players[self.players.keys()[player_index]]
 
     def _lead_to_next_player(self):
-        self.current_lead = (self.current_lead+self.direction) % self.players_number
+        self.current_lead = self.get_next_player().id
         return self.players[self.current_lead]
 
     def lead_to_next_player(self):

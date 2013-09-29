@@ -1,6 +1,7 @@
 from source.game.packets import GameState, InitialGameState
 from source.game.player import Player
 from source.game.game import Game
+from source.game.cards import get_card_by_id
 
 
 class GameMechanics(object):
@@ -44,6 +45,20 @@ class GameMechanics(object):
         player = self.game.leave_game(self.player_id)
         if player:
             self._send_game_state()
+
+    def on_throw_in(self, card_id):
+        player_id = self.session['player_id']
+        card = get_card_by_id()
+        top_card = self.game.deck.get_top_card()
+
+        if not (card['color'] == top_card['color'] and card['value'] == top_card['value']):
+            return
+
+        self.game.deck.put_card(card)
+        self.game.current_lead = player_id
+        self.game.lead_to_next_player()
+        self._send_game_state()
+
 
     def _send_game_state(self):
         for sessid, socket in self.socket.server.sockets.iteritems():
