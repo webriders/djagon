@@ -2,6 +2,8 @@ Djagon
 ======
 This is DjangoDash 2013 contest project (why "Djagon"? Let's say that it means something :)
 
+URL: (http://djagon.webriders.com.ua/)
+
 The idea of this project is to implement online multiplayer "Uno" card game.
 But at the first place to make it fun and entertaining! (thus we have changed the rules a bit)
 
