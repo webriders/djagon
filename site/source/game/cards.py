@@ -16,6 +16,7 @@ def generate_cards():
         card['id'] = str(uuid.uuid4())[-5:]
     return cards
 
+
 def get_card_by_id(cards, card_id):
     for x in cards:
         if x["id"] == card_id:

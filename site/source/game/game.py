@@ -28,6 +28,21 @@ class Game(object):
         self.deck = UnoDeck()
         self.players = OrderedDict()
         self.user_sessions = {}
+        self._current_lead = None
+        self._previous_lead = None
+
+    @property
+    def current_lead(self):
+        return self._current_lead
+
+    @property
+    def previous_lead(self):
+        return self._previous_lead
+
+    @current_lead.setter
+    def current_lead(self, x):
+        self._previous_lead = self._current_lead
+        self._current_lead = x
 
     def save(self):
         game, created = GameTable.objects.get_or_create(game_id=self.game_id)
@@ -65,21 +80,21 @@ class Game(object):
 
     def start(self):
         self.status = GameTable.STATUS_ACTIVE
-        self.current_lead = random.randrange(self.players_number)
+        self.current_lead = random.choice(self.players.keys())
         for player in list(self.players.values()):
             player.hand = self.deck.draw_cards(self.INIT_CARDS_NUMBER)
         self.save()
 
     def get_lead_player(self):
-        return self.players.values()[self.current_lead]
+        return self.players[self.current_lead]
 
     def get_next_player(self):
         player_index = (self.current_lead+self.direction) % self.players_number
-        return self.players.values()[player_index]
+        return self.players[player_index]
 
     def _lead_to_next_player(self):
         self.current_lead = (self.current_lead+self.direction) % self.players_number
-        return self.players.values()[self.current_lead]
+        return self.players[self.current_lead]
 
     def lead_to_next_player(self):
         next_player = self._lead_to_next_player()

@@ -70,7 +70,7 @@ class GameMechanics(object):
             if 'game_id' not in socket.session:
                 continue
             if self.game.game_id == socket.session['game_id']:
-                player_id = self.socket.session['player_id']
+                player_id = socket.session['player_id']
                 data = GameState(player_id, self.game)
 
                 pkt = {

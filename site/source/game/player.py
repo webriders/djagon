@@ -34,5 +34,5 @@ class Player(object):
             data['cards'] = self.hand
             data['you'] = True
         else:
-            data['cards'] = [card.id for card in self.hand]
+            data['cards'] = [card["id"] for card in self.hand]
         return data

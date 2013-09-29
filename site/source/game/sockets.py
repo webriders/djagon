@@ -42,6 +42,7 @@ class GameNamespace(BaseNamespace):
         if not are_all_players_confirmed:
             game_mechanics._send_initial_game_state()
         else:
+            game.start()
             game_mechanics._send_game_start()
 
     def on_start_unconfirm(self, game_id):
