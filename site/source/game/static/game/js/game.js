@@ -33,6 +33,8 @@ djagon.game.Game.prototype = {
 
     currentPlayerId: null,
 
+    cardsURL: '/static/game/img/cards/', // sorry for this, we have no time, DjangoDash 2013 time is running out
+
     init: function(cfg) {
         $.extend(true, this, cfg);
         this.initSocket();
@@ -77,6 +79,7 @@ djagon.game.Game.prototype = {
 
         this.drawPlayers(playersData);
         this.drawYourCards(yourCardsData);
+        this.drawOtherCards(otherCardsData);
     },
 
     drawPlayers: function(playersData) {
@@ -214,7 +217,6 @@ djagon.game.Game.prototype = {
             cardWidth = 141,
             cardHeight = 220;
 
-        // create cards data
         var yourCardsData = [],
             otherCardsData = [];
 
@@ -222,11 +224,12 @@ djagon.game.Game.prototype = {
             var cardsAmount = player.cards.length;
 
             $.each(player.cards, function(i, card) {
-                var data = $.extend(true, {}, card);
+                var data;
 
                 if (player.you) {
-                    // handle X
-                    var handWidth = 400,
+                    data = $.extend(true, {}, card);
+
+                    var handWidth = 800,
                         cardMarginRight = 20,
                         cardMarginBottom = 20,
                         totalCardsWidth = cardWidth * cardsAmount + cardMarginRight * (cardsAmount - 1),
@@ -237,13 +240,15 @@ djagon.game.Game.prototype = {
                             : 0;
 
                     data.x = start + step * i;
-
-                    // handle Y
                     data.y = container.height() - cardHeight - cardMarginBottom;
-
                     yourCardsData.push(data);
                 } else {
-
+                    data = {
+                        id: card,
+                        x: player.x - cardWidth / 2 + (16 / cardsAmount * i) - 16,
+                        y: player.y - cardHeight / 2 + (16 / cardsAmount * i) - 16
+                    };
+                    otherCardsData.push(data);
                 }
             })
         });
@@ -254,33 +259,28 @@ djagon.game.Game.prototype = {
         };
     },
 
-    sendReadyState: function() {
-        if (this.gameState != 'before') {
-            alert("You can't do this now, sorry...");
-        } else {
-            console.log('start_confirm', 'sent');
-            this.socket.emit("start_confirm", this.gameId);
-        }
-    },
-
     drawYourCards: function(cardsData) {
-        var cards = d3.select(this.container[0]).selectAll('.card')
+        var cards = d3.select(this.container[0]).selectAll('.card.your')
             .data(cardsData, function(d) {
                 return d.id;
             });
 
         this.createYourNewCards(cards.enter());
         this.removeYourOldCards(cards.exit());
-        this.updateYourCurrentCards(d3.select(this.container[0]).selectAll('.card'));
+        this.updateYourCurrentCards(d3.select(this.container[0]).selectAll('.card.your'));
     },
 
     createYourNewCards: function(cards) {
+        console.log('createYourNewCards', cards[0].length);
+
+        var self = this;
+
         cards.append('div')
-            .classed('card', true)
+            .classed('card your', true)
             .append('img')
             .attr('src', function(d) {
                 var color = d.color,
-                    cardsURL = '/static/game/img/cards/'; // sorry for this, we have no time, DjangoDash 2013 is running out
+                    cardsURL = self.cardsURL;
 
                 if (color == 'black' && d.value == 'wild')
                     return cardsURL + 'card-wild.png';
@@ -301,6 +301,8 @@ djagon.game.Game.prototype = {
     },
 
     removeYourOldCards: function(cards) {
+        console.log('removeYourOldCards', cards[0].length);
+
         cards.each(function() {
             $(this).fadeOut().promise().done(function() {
                 $(this).remove();
@@ -309,7 +311,15 @@ djagon.game.Game.prototype = {
     },
 
     updateYourCurrentCards: function(cards) {
-        var self = this;
+        console.log('updateYourCurrentCards', cards[0].length);
+
+        var maxWidth = this.container.width(),
+            maxHeight = this.container.height(),
+            cardWidth = 141,
+            cardHeight = 220;
+
+        cards.style('left', maxWidth / 2 - cardWidth / 2)
+            .style('top', maxHeight / 2 - cardHeight / 2);
 
         cards.transition()
             .style('left', function(d) {
@@ -320,6 +330,58 @@ djagon.game.Game.prototype = {
             })
     },
 
+    drawOtherCards: function(cardsData) {
+        var cards = d3.select(this.container[0]).selectAll('.card.other')
+            .data(cardsData, function(d) {
+                return d.id;
+            });
+
+        this.createOtherNewCards(cards.enter());
+        this.removeOtherOldCards(cards.exit());
+        this.updateOtherCurrentCards(d3.select(this.container[0]).selectAll('.card.other'));
+    },
+
+    createOtherNewCards: function(cards) {
+        console.log('createOtherNewCards', cards[0].length);
+
+        var cardBackSide = this.cardsURL + 'card-back-side.png';
+
+        cards.append('div')
+            .classed('card other', true)
+            .append('img')
+            .attr('src', cardBackSide);
+    },
+
+    removeOtherOldCards: function(cards) {
+        console.log('removeOtherOldCards', cards[0].length);
+
+        cards.each(function() {
+            $(this).fadeOut().promise().done(function() {
+                $(this).remove();
+            });
+        });
+    },
+
+    updateOtherCurrentCards: function(cards) {
+        console.log('updateOtherCurrentCards', cards[0].length);
+
+        var maxWidth = this.container.width(),
+            maxHeight = this.container.height(),
+            cardWidth = 141,
+            cardHeight = 220;
+
+        cards.style('left', maxWidth / 2 - cardWidth / 2)
+            .style('top', maxHeight / 2 - cardHeight / 2);
+
+        cards.transition()
+            .style('left', function(d) {
+                return d.x + 'px';
+            })
+            .style('top', function(d) {
+                return d.y + 'px';
+            });
+    },
+
     initResize: function() {
         var self = this;
 
@@ -327,5 +389,14 @@ djagon.game.Game.prototype = {
             if (self.currentState)
                 self.draw(self.currentState);
         });
+    },
+
+    sendReadyState: function() {
+        if (this.gameState != 'before') {
+            alert("You can't do this now, sorry...");
+        } else {
+            this.socket.emit("start_confirm", this.gameId);
+            console.log('start_confirm', 'sent');
+        }
     }
 };
