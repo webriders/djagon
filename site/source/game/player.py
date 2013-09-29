@@ -5,11 +5,12 @@ from django.utils.http import urlquote
 class Player(object):
     AVATAR_URL = 'http://robohash.org/'
 
-    def __init__(self, name="", hand=None):
+    def __init__(self, name="", sessid=None, hand=None):
         self.id = str(uuid.uuid4())[:6].upper()
         self.name = name
         self.hand = hand or []
         self.lamp = False
+        self.sessid = sessid
 
     def draw_cards(self, cards):
         self.hand = self.hand + cards
@@ -27,9 +28,11 @@ class Player(object):
             'id': self.id,
             'name': self.name,
             'avatar': self.avatar,
-            'cards_number': self.cards_number,
             'lamp': self.lamp
         }
         if self.id == player_id:
+            data['cards'] = self.hand
             data['you'] = True
+        else:
+            data['cards'] = [card.id for card in self.hand]
         return data
