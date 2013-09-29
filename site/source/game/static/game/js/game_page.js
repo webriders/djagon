@@ -1,11 +1,12 @@
 djagon = window.djagon || {};
+djagon.game = djagon.game || {};
 
-djagon.gamePage = {
+djagon.game.page = {
     game: null,
 
     init: function() {
         var cnt = $('#game-table');
-        this.game = new djagon.Game({
+        this.game = new djagon.game.Game({
             container: cnt,
             gameId: cnt.data('game-id'),
             url: cnt.data('game-url')
@@ -14,5 +15,5 @@ djagon.gamePage = {
 };
 
 $(function() {
-    djagon.gamePage.init();
+    djagon.game.page.init();
 });

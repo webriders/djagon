@@ -1,4 +1,5 @@
 djagon = window.djagon || {};
+djagon.game = djagon.game || {};
 
 /**
  * The Game.
@@ -7,18 +8,20 @@ djagon = window.djagon || {};
  * @param cfg Config
  * @constructor
  */
-djagon.Game = function(cfg) {
+djagon.game.Game = function(cfg) {
     cfg && this.init(cfg);
 };
 
-djagon.Game.prototype = {
+djagon.game.Game.prototype = {
     container: null,
     url: '',
     gameId: '',
     socket: null,
+    players: null,
 
     init: function(cfg) {
         $.extend(true, this, cfg);
+        this.players = [];
         this.initSocket();
     },
 
@@ -40,20 +43,39 @@ djagon.Game.prototype = {
 };
 
 /**
- * Player.
- * Game has only one active player with playable hand.
+ * Abstract player class (for both: main player and other players).
  *
- * @param cfg Config
+ * @param {Object=} cfg Config
  * @constructor
  */
-djagon.Player = function(cfg) {
+djagon.game.Player = function(cfg) {
     cfg && this.init(cfg);
 };
 
-djagon.Player.prototype = {
+djagon.game.Player.prototype = {
+    cards: 0,
+    game: null,
+
     init: function(cfg) {
         $.extend(true, this, cfg);
-
-
+        // TODO
     }
 };
+
+/**
+ * Main player.
+ * Game has only one main player with playable hand.
+ *
+ * @param {Object=} cfg Config
+ * @constructor
+ */
+djagon.game.MainPlayer = function(cfg) {
+    cfg && this.init(cfg);
+};
+
+djagon.game.MainPlayer.prototype = $.extend(true, new djagon.game.Player(), {
+    init: function(cfg) {
+        $.extend(true, this, cfg);
+        // TODO
+    }
+});
