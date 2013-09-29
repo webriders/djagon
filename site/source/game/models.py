@@ -22,3 +22,6 @@ class GameTable(models.Model):
         except GameTable.DoesNotExist:
             return None
         return jsonpickle.decode(json)
+
+    def resolve(self):
+        return jsonpickle.decode(self.state)

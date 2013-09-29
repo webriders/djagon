@@ -67,6 +67,9 @@ class Game(object):
         self.save()
         return player
 
+    def user_is_member(self, sessid):
+        return sessid in self.user_sessions
+
     def leave_game(self, player_id):
         try:
             player = self.players.pop(player_id)

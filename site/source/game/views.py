@@ -29,6 +29,7 @@ class PlayGameView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         game_id = self.kwargs.get('game_id')
+        sessid = request.COOKIES.get('sessid')
         try:
             game = GameTable.objects.get(game_id=game_id)
         except GameTable.DoesNotExist:
@@ -37,8 +38,12 @@ class PlayGameView(TemplateView):
         if game.players_number >= Game.PLAYERS_LIMIT:
             messages.warning(request, "Players number is limited in this game. Please, create yours!")
             return HttpResponseRedirect(reverse('djagon:home'))
-        if not game.status in [game.STATUS_OPEN, game.STATUS_IDLE]:
-            messages.warning(request, "This game has already been started")
+        if game.status == game.STATUS_ACTIVE:
+            if not sessid or not game.resolve().user_is_member(sessid):
+                messages.warning(request, "This game has already been started 2")
+                return HttpResponseRedirect(reverse('djagon:home'))
+        elif not game.status in [game.STATUS_OPEN, game.STATUS_IDLE]:
+            messages.warning(request, "This game has already been started 1")
             return HttpResponseRedirect(reverse('djagon:home'))
 
         return super(PlayGameView, self).get(self, request, *args, **kwargs)
