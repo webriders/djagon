@@ -44,31 +44,46 @@ djagon.game.Game.prototype = {
         var socket = this.socket = io.connect(this.url);
 
         socket.on('connect', function() {
-            socket.emit('join_game', self.gameId, self._get_sessid());
+            socket.emit('join_game', self.gameId, self.getSessionId());
         });
 
         socket.on('initial_state', function(state) {
             console.log('initial_state', 'received');
             self.gameState = 'before';
             self.currentState = state;
-            self.drawPlayers(state.players_list);
+            self.draw(state);
         });
 
-        socket.on('initial_state', function(state) {});
+        socket.on('game_start', function(state) {
+            console.log('game_start', 'received');
+            self.gameState = 'playing';
+            self.currentState = state;
+            self.draw(state);
+        });
     },
 
-    _get_sessid: function() {
+    getSessionId: function() {
         if (!($.cookie('sessid'))) {
             $.cookie('sessid', this.gameId + ':' + Math.floor(Math.random() * 100000 ));
         }
         return $.cookie('sessid');
     },
 
-    drawPlayers: function(playersRawData) {
-        var playersData = this.generatePlayersData(playersRawData);
+    draw: function(state) {
+        var playersData = this.generatePlayersData(state.players_list);
+        var cardsData = this.generateCardsData(playersData);
+        var yourCardsData = cardsData.your;
+        var otherCardsData = cardsData.other;
 
+        this.drawPlayers(playersData);
+        this.drawYourCards(yourCardsData);
+    },
+
+    drawPlayers: function(playersData) {
         var players = d3.select(this.container[0]).selectAll('.player-info')
-            .data(playersData, function(d) { return d.id; });
+            .data(playersData, function(d) {
+                return d.id;
+            });
 
         this.createNewPlayers(players.enter());
         this.removeOldPlayers(players.exit());
@@ -84,7 +99,9 @@ djagon.game.Game.prototype = {
         // avatar
         el.append('img')
             .classed('avatar', true)
-            .style('background-color', function(d) { return d.color; })
+            .style('background-color', function(d) {
+                return d.color;
+            })
             .attr('src', function(d) {
                 return d.avatar;
             });
@@ -93,10 +110,14 @@ djagon.game.Game.prototype = {
         el.append('div')
             .classed('player-name', true)
             .append('span')
-            .text(function(d) { return d.name; });
+            .text(function(d) {
+                return d.name;
+            });
 
         // "I'm ready" button
-        el.filter(function(d) { return d.you == true; })
+        el.filter(function(d) {
+            return d.you == true;
+        })
             .append('button')
             .classed('ready-button', true)
             .text('I am ready!')
@@ -130,17 +151,20 @@ djagon.game.Game.prototype = {
                 readyMark[self.gameState == 'before' && d.lamp == true ? 'addClass' : 'removeClass']('active');
             })
             .transition()
-            .style('left', function(d) { return d.x + 'px'; })
-            .style('top', function(d) { return d.y + 'px'; })
-
+            .style('left', function(d) {
+                return d.x + 'px';
+            })
+            .style('top', function(d) {
+                return d.y + 'px';
+            })
     },
 
-    generatePlayersData: function(players) {
+    generatePlayersData: function(playersRawData) {
         var container = this.container,
-            playersAmount = players.length;
+            playersAmount = playersRawData.length;
 
         var yourPlayerIndex;
-        $.each(players, function(index, player) {
+        $.each(playersRawData, function(index, player) {
             if (player.you)
                 yourPlayerIndex = index;
         });
@@ -150,7 +174,7 @@ djagon.game.Game.prototype = {
 
         var newData = [];
 
-        $.each(players, function(i, o) {
+        $.each(playersRawData, function(i, o) {
             var data = $.extend(true, {}, o);
 
             // set position
@@ -177,20 +201,57 @@ djagon.game.Game.prototype = {
 
             return {
                 x: margin + xr * (Math.cos(angle) + 1),
-                y: margin + yr * (Math.sin(angle) + 1)
+                y: margin + yr * (Math.sin(angle) + 1),
+                incline: i * alpha
             }
         }
 
         return newData;
     },
 
-    initResize: function() {
-        var self = this;
+    generateCardsData: function(playersData) {
+        var container = this.container,
+            cardWidth = 141,
+            cardHeight = 220;
 
-        $(window).on('resize', function() {
-            if (self.currentState)
-                self.drawPlayers(self.currentState.players_list);
+        // create cards data
+        var yourCardsData = [],
+            otherCardsData = [];
+
+        $.each(playersData, function(index, player) {
+            var cardsAmount = player.cards.length;
+
+            $.each(player.cards, function(i, card) {
+                var data = $.extend(true, {}, card);
+
+                if (player.you) {
+                    // handle X
+                    var handWidth = 400,
+                        cardMarginRight = 20,
+                        cardMarginBottom = 20,
+                        totalCardsWidth = cardWidth * cardsAmount + cardMarginRight * (cardsAmount - 1),
+                        offset = Math.max(0, (handWidth - totalCardsWidth) / 2),
+                        start = container.width() / 2 - handWidth / 2 + offset,
+                        step = cardsAmount > 1
+                            ? Math.min((handWidth - cardWidth) / (cardsAmount - 1), cardWidth + cardMarginRight)
+                            : 0;
+
+                    data.x = start + step * i;
+
+                    // handle Y
+                    data.y = container.height() - cardHeight - cardMarginBottom;
+
+                    yourCardsData.push(data);
+                } else {
+
+                }
+            })
         });
+
+        return {
+            your: yourCardsData,
+            other: otherCardsData
+        };
     },
 
     sendReadyState: function() {
@@ -202,7 +263,69 @@ djagon.game.Game.prototype = {
         }
     },
 
-    drawCards: function() {
+    drawYourCards: function(cardsData) {
+        var cards = d3.select(this.container[0]).selectAll('.card')
+            .data(cardsData, function(d) {
+                return d.id;
+            });
 
+        this.createYourNewCards(cards.enter());
+        this.removeYourOldCards(cards.exit());
+        this.updateYourCurrentCards(d3.select(this.container[0]).selectAll('.card'));
+    },
+
+    createYourNewCards: function(cards) {
+        cards.append('div')
+            .classed('card', true)
+            .append('img')
+            .attr('src', function(d) {
+                var color = d.color,
+                    cardsURL = '/static/game/img/cards/'; // sorry for this, we have no time, DjangoDash 2013 is running out
+
+                if (color == 'black' && d.value == 'wild')
+                    return cardsURL + 'card-wild.png';
+                else if (color == 'black' && d.value == 'draw-four')
+                    return cardsURL + 'card-wild-draw-four.png';
+                else
+                    return cardsURL + 'card-' + d.value + '.png';
+            })
+            .style('background-color', function(d) {
+                return {
+                    black: '#000',
+                    red: '#ed1c24',
+                    green: '#00a650',
+                    blue: '#0994dd',
+                    yellow: '#fedd03'
+                }[d.color];
+            });
+    },
+
+    removeYourOldCards: function(cards) {
+        cards.each(function() {
+            $(this).fadeOut().promise().done(function() {
+                $(this).remove();
+            });
+        });
+    },
+
+    updateYourCurrentCards: function(cards) {
+        var self = this;
+
+        cards.transition()
+            .style('left', function(d) {
+                return d.x + 'px';
+            })
+            .style('top', function(d) {
+                return d.y + 'px';
+            })
+    },
+
+    initResize: function() {
+        var self = this;
+
+        $(window).on('resize', function() {
+            if (self.currentState)
+                self.draw(self.currentState);
+        });
     }
 };
