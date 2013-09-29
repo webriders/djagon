@@ -87,6 +87,7 @@ djagon.game.Game.prototype = {
         this.drawYourCards(yourCardsData);
         this.drawOtherCards(otherCardsData);
         this.drawDecks();
+        this.drawLeadPlayer(playersData);
     },
 
     drawPlayers: function(playersData) {
@@ -458,7 +459,7 @@ djagon.game.Game.prototype = {
             else
                 cardURL += 'card-' + cardData.value + '.png';
 
-            //card.hide().delay(500).fadeIn();
+            card.hide().fadeIn();
 
             cardImg.attr('src', cardURL)
                 .css({
@@ -473,6 +474,29 @@ djagon.game.Game.prototype = {
         } else {
             this.deckEl.find('.card').fadeOut().promise().done(function() {
                 this.remove();
+            });
+        }
+    },
+
+    leadPlayerMark: null,
+
+    drawLeadPlayer: function(playersData) {
+        if (!this.leadPlayerMark)
+            this.leadPlayerMark = $('<div class="lead-player-mark">').appendTo(this.container);
+
+        var activePlayerId = this.currentState.lead_player_id, leadPlayer;
+        $.each(playersData, function(i, player) {
+            if (player.id == activePlayerId)
+                leadPlayer = player;
+        });
+
+        if (!leadPlayer) {
+            this.leadPlayerMark.hide();
+            return;
+        } else {
+            this.leadPlayerMark.fadeIn().animate({
+                left: leadPlayer.x,
+                top: leadPlayer.y
             });
         }
     },
