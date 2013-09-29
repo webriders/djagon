@@ -2,12 +2,14 @@
 @import "helpers/colors";
 
 .page-container {
-    padding: 20px 20px 40px;
+    padding: 20px 20px 60px;
+    overflow: hidden;
     @include box-sizing(border-box);
 }
 
 .page-footer {
-    padding: 10px 23px;
+    padding: 20px 23px;
+    line-height: 20px;
 }
 
 .game-table {
