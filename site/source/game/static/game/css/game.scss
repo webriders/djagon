@@ -111,4 +111,40 @@
             vertical-align: top;
         }
     }
+
+    .stack {
+        position: absolute;
+        border-radius: 14px;
+        width: 141px;
+        height: 220px;
+        padding: 4px;
+        border: 4px dashed $dark-red;
+        margin-left: -8px;
+        margin-top: -8px;
+
+        &:before {
+            content: ' ';
+            display: block;
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            width: 141px;
+            height: 220px;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, .3);
+            background: url(../img/cards/card-back-side.png) no-repeat center;
+        }
+    }
+
+    .deck {
+        position: absolute;
+        border-radius: 14px;
+        width: 141px;
+        height: 220px;
+        padding: 4px;
+        border: 4px dashed $dark-red;
+        margin-left: -8px;
+        margin-top: -8px;
+    }
 }

@@ -82,6 +82,7 @@ djagon.game.Game.prototype = {
         this.drawPlayers(playersData);
         this.drawYourCards(yourCardsData);
         this.drawOtherCards(otherCardsData);
+        this.drawDecks();
     },
 
     drawPlayers: function(playersData) {
@@ -401,7 +402,71 @@ djagon.game.Game.prototype = {
             });
     },
 
+    deckEl: null,
+    stackEl: null,
+
     drawDecks: function() {
+        var pos = this.getDecksPosition();
+
+        if (!this.deckEl)
+            this.deckEl = $('<div class="deck">').appendTo(this.container).css({
+                left: pos.deck.x,
+                top: pos.deck.y
+            });
+
+        if (!this.stackEl)
+            this.stackEl = $('<div class="stack">').appendTo(this.container).css({
+                left: pos.stack.x,
+                top: pos.stack.y
+            });
+
+        this.deckEl.animate({
+            left: pos.deck.x,
+            top: pos.deck.y
+        });
+
+        this.stackEl.animate({
+            left: pos.stack.x,
+            top: pos.stack.y
+        });
+
+        if (this.currentState.top_card) {
+            var card = this.deckEl.find('.card');
+
+            if (!card[0]) {
+                card = $('<div class="card"><img alt="card"></div>').appendTo(this.deckEl);
+            }
+
+            card = card.find('img');
+            var cardData = this.currentState.top_card;
+
+            var color = cardData.color,
+                cardURL = this.cardsURL;
+
+            if (color == 'black' && cardData.value == 'wild')
+                cardURL += 'card-wild.png';
+            else if (color == 'black' && cardData.value == 'draw-four')
+                cardURL += 'card-wild-draw-four.png';
+            else
+                cardURL += 'card-' + cardData.value + '.png';
+
+            card.attr('src', cardURL)
+                .css({
+                    'background-color': {
+                        black: '#000',
+                        red: '#ed1c24',
+                        green: '#00a650',
+                        blue: '#0994dd',
+                        yellow: '#fedd03'
+                    }[cardData.color]
+                });
+
+            this.deckEl.append()
+        } else {
+            this.deckEl.find('.card').fadeOut().promise().done(function() {
+                this.remove();
+            });
+        }
     },
 
     getDecksPosition: function() {
@@ -409,7 +474,7 @@ djagon.game.Game.prototype = {
             halfHeight = this.container.height() / 2,
             cardWidth = this.cardWidth,
             cardHeight = this.cardHeight,
-            margin = 10;
+            margin = 30;
 
         return {
             deck: {
