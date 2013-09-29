@@ -27,6 +27,7 @@ class GameMechanics(object):
         self.socket = socket
         self.session = session
         self.ns_name = ns_name
+        self.player_id = self.session.get('player_id')
 
     def on_join_game(self):
         if not hasattr(self.session, 'game_id') or self.game.game_id != self.session['game_id']:
@@ -34,6 +35,11 @@ class GameMechanics(object):
             self.session['game_id'] = self.game.game_id
             self.session['player_id'] = player.id
         self._send_initial_game_state()
+
+    def on_leave_game(self):
+        player = self.game.leave_game(self.player_id)
+        if player:
+            self._send_game_state()
 
     def _send_game_state(self):
         for sessid, socket in self.socket.server.sockets.iteritems():

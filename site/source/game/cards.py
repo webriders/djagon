@@ -14,5 +14,4 @@ def generate_cards():
             cards.append({'color': col, 'value': val})
     for card in cards:
         card['id'] = str(uuid.uuid4())[-5:]
-        print card['id']
     return cards
