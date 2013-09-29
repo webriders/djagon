@@ -19,9 +19,8 @@ class GameMechanics(object):
         'uno': 'handle_uno',
     }
 
-    EVENT_UPDATE_STATE = 'update_state'
     EVENT_INITIAL_STATE = 'initial_state'
-    EVENT_GAME_START = 'game_running'
+    EVENT_GAME_RUNNING = 'game_running'
 
     def __init__(self, game, socket, session, ns_name):
         assert isinstance(game, Game)
@@ -82,7 +81,7 @@ class GameMechanics(object):
 
                 pkt = {
                     "type": "event",
-                    "name": self.EVENT_GAME_START,
+                    "name": self.EVENT_GAME_RUNNING,
                     "args": data,
                     "endpoint": self.ns_name
                 }
