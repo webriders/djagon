@@ -1,7 +1,6 @@
-from django.db import models
-from jsonfield import JSONField
-
 import jsonpickle
+from jsonfield import JSONField
+from django.db import models
 
 
 class GameTable(models.Model):

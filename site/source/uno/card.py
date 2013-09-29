@@ -53,16 +53,8 @@ def generate_cards(game):
     colors = ['red', 'green', 'blue', 'yellow']
     values = [str(x) for x in range(1, 10)] * 2 + ['0']
     special_values = ['reverse', 'skip', 'draw-two'] * 2
-
-    wild_cards = [{
-                      'color': 'black',
-                      'value': 'wild',
-                  }] * 4
-
-    draw_four_cards = [{
-                           'color': 'black',
-                           'value': 'draw-four'
-                       }] * 4
+    wild_cards = [{'color': 'black', 'value': 'wild'}] * 4
+    draw_four_cards = [{'color': 'black', 'value': 'draw-four'}] * 4
 
     cards = []
     for col in colors:

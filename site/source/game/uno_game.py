@@ -18,12 +18,12 @@ class UnoGame(object):
     DIRECTION_REVERSE = -1
 
     players = OrderedDict()
-    current_lead = 0 # index of current player
+    current_lead = 0  # index of current player
 
     last_turn_cheated = False
 
     def __init__(self):
-        self.game_id  = str(uuid.uuid4())[:6].upper()
+        self.game_id = str(uuid.uuid4())[:6].upper()
         self.direction = self.DIRECTION_DIRECT
         self.deck = UnoDeck()
 

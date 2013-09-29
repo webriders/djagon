@@ -11,4 +11,3 @@ class GameNamespace(BaseNamespace):
         player = game.join_game()
         self.session['game_id'] = game_id
         self.session['player_id'] = player.id
-
