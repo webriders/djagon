@@ -36,7 +36,7 @@ class Game(object):
 
     def join_game(self):
         self.status = GameTable.STATUS_OPEN
-        default_name = "Player_%s" % (self.players_number+1)
+        default_name = "Player %s" % (self.players_number+1)
         player = Player(name=default_name)
         self.players[player.id] = player
         self.save()

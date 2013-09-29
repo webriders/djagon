@@ -21,11 +21,19 @@ class GameMechanics(object):
     EVENT_UPDATE_STATE = 'update_state'
     EVENT_INITIAL_STATE = 'initial_state'
 
-    def __init__(self, game, socket, ns_name):
+    def __init__(self, game, socket, session, ns_name):
         assert isinstance(game, Game)
         self.game = game
         self.socket = socket
+        self.session = session
         self.ns_name = ns_name
+
+    def on_join_game(self):
+        if not hasattr(self.session, 'game_id') or self.game.game_id != self.session['game_id']:
+            player = self.game.join_game()
+            self.session['game_id'] = self.game_id
+            self.session['player_id'] = player.id
+        self._send_initial_game_state()
 
     def _send_game_state(self):
         for sessid, socket in self.socket.server.sockets.iteritems():
@@ -43,7 +51,10 @@ class GameMechanics(object):
                 continue
             if self.game.game_id == socket.session['game_id']:
                 data = GameInitialStatePacketData(self.game)
-                pkt = dict(type="event", name=self.EVENT_INITIAL_STATE, args=data, endpoint=self.ns_name)
+                player_id = self.socket.session['player_id']
+                pkt = dict(type="event", name=self.EVENT_INITIAL_STATE,
+                           args={'player_id':player_id}.update(data),
+                           endpoint=self.ns_name)
                 socket.send_packet(pkt)
 
     def make_turn(self, player, card):
