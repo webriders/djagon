@@ -45,7 +45,6 @@ class GameMechanics(object):
         player = self.game.leave_game(self.player_id)
         if player:
             self._send_game_running()
-            self._send_game_state()
 
     def on_throw_in(self, card_id):
         player_id = self.session['player_id']
@@ -59,8 +58,7 @@ class GameMechanics(object):
         self.game.deck.put_card(card)
         self.game.current_lead = player_id
         self.game.lead_to_next_player()
-        self._send_game_state()
-
+        self._send_game_running()
 
     def _send_initial_game_state(self):
         for sessid, socket in self.socket.server.sockets.iteritems():
@@ -74,7 +72,7 @@ class GameMechanics(object):
                 pkt["args"] = data
                 socket.send_packet(pkt)
 
-    def _send_game_start(self):
+    def _send_game_running(self):
         for sessid, socket in self.socket.server.sockets.iteritems():
             if 'game_id' not in socket.session:
                 continue
