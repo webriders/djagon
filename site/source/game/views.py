@@ -13,7 +13,7 @@ create_game = CreateGameView.as_view()
 
 
 class PlayGameView(TemplateView):
-    template_name = 'game/game_play.html'
+    template_name = 'game/game_page.html'
 
     def get_context_data(self, **kwargs):
         data = super(PlayGameView, self).get_context_data(**kwargs)
