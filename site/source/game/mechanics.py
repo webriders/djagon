@@ -81,13 +81,14 @@ class GameMechanics(object):
             self.handle_turn(player, card)
 
         self.handle_if_end_of_round()
+        self.handle_if_player_have_cards_to_move()
+        self._send_game_running()
 
     def handle_if_end_of_round(self):
         for x in self.game.players:
             if self.game.players[x].cards_number == 0:
                 self.announce_score()
                 self.game.start()
-                self._send_game_running()
 
     def handle_throw_in(self, player, card):
         top_card = self.game.deck.get_top_card()
@@ -99,7 +100,6 @@ class GameMechanics(object):
         self.game.deck.put_card(card)
         self.game.current_lead = player.id
         self.game.lead_to_next_player()
-        self._send_game_running()
 
     def broadcast_user_message(self, message_type, message_content):
         for sessid, socket in self.socket.server.sockets.iteritems():
@@ -133,7 +133,26 @@ class GameMechanics(object):
             spec_handler()
         else:
             self.game.lead_to_next_player()
+
         self._send_game_running()
+
+    def handle_if_player_have_cards_to_move(self):
+        while True:
+            hand = self.game.players[self.game.current_lead].hand
+            need_card = True
+            for card in hand:
+                if self.turn_is_fair(card):
+                    need_card = False
+
+            if need_card:
+                card = self.game.deck.draw_card()
+                self.game.players[self.game.current_lead].draw_cards([card])
+                if self.turn_is_fair(card):
+                    return
+                self.game.lead_to_next_player()
+            else:
+                return
+
 
     def turn_is_fair(self, card):
         top_card = self.game.deck.get_top_card()
