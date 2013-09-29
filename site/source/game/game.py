@@ -17,8 +17,6 @@ class Game(object):
     DIRECTION_DIRECT = 1
     PLAYERS_LIMIT = 7
 
-    current_lead = 0  # index of current player
-
     last_turn_cheated = False
 
     def __init__(self):
@@ -27,6 +25,21 @@ class Game(object):
         self.direction = self.DIRECTION_DIRECT
         self.deck = UnoDeck()
         self.players = OrderedDict()
+        _current_lead = 0
+        _previous_lead = 0
+
+    @property
+    def current_lead(self):
+        return self._current_lead
+
+    @property
+    def previous_lead(self):
+        return self._previous_lead
+
+    @current_lead.setter
+    def set_current_lead(self, x):
+        self._previous_lead = self._current_lead
+        self._current_lead = x
 
     def save(self):
         game, created = GameTable.objects.get_or_create(game_id=self.game_id)
@@ -65,15 +78,15 @@ class Game(object):
         self.save()
 
     def get_lead_player(self):
-        return self.players.values()[self.current_lead]
+        return self.players[self.current_lead]
 
     def get_next_player(self):
         player_index = (self.current_lead+self.direction) % self.players_number
-        return self.players.values()[player_index]
+        return self.players[player_index]
 
     def _lead_to_next_player(self):
         self.current_lead = (self.current_lead+self.direction) % self.players_number
-        return self.players.values()[self.current_lead]
+        return self.players[self.current_lead]
 
     def lead_to_next_player(self):
         next_player = self._lead_to_next_player()
