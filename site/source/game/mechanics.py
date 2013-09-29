@@ -20,7 +20,7 @@ class GameMechanics(object):
 
     EVENT_UPDATE_STATE = 'update_state'
     EVENT_INITIAL_STATE = 'initial_state'
-    EVENT_GAME_START = 'game_start'
+    EVENT_GAME_START = 'game_running'
 
     def __init__(self, game, socket, session, ns_name):
         assert isinstance(game, Game)
@@ -36,26 +36,15 @@ class GameMechanics(object):
             self.session['game_id'] = self.game.game_id
             self.session['player_id'] = player.id
         if self.game.is_active():
-            self._send_game_state()
+            self._send_game_running()
         else:
             self._send_initial_game_state()
 
     def on_leave_game(self):
         player = self.game.leave_game(self.player_id)
         if player:
-            self._send_game_state()
+            self._send_game_running()
 
-    def _send_game_state(self):
-        for sessid, socket in self.socket.server.sockets.iteritems():
-            if 'game_id' not in socket.session:
-                continue
-            if self.game.game_id == socket.session['game_id']:
-                player_id = socket['player_id']
-                data = GameState(player_id, self.game)
-                pkt = dict(type="event", name=self.EVENT_UPDATE_STATE, endpoint=self.ns_name)
-                pkt["args"] = data
-                socket.send_packet(pkt)
-                
     def _send_initial_game_state(self):
         for sessid, socket in self.socket.server.sockets.iteritems():
             if 'game_id' not in socket.session:
@@ -68,7 +57,7 @@ class GameMechanics(object):
                 pkt["args"] = data
                 socket.send_packet(pkt)
 
-    def _send_game_start(self):
+    def _send_game_running(self):
         for sessid, socket in self.socket.server.sockets.iteritems():
             if 'game_id' not in socket.session:
                 continue
@@ -99,13 +88,13 @@ class GameMechanics(object):
             spec_handler(self)
         else:
             self.game.lead_to_next_player()
-        self._send_game_state()
+        self._send_game_running()
 
     def turn_is_fair(self, card):
         top_card = self.game.deck.get_top_card()
-        if top_card['color'] == card['color']:
+        if top_card and top_card['color'] == card['color']:
             return True
-        if top_card['value'] == card['value']:
+        if top_card and top_card['value'] == card['value']:
             return True
         if card['color'] == 'black':
             return True

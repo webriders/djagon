@@ -43,7 +43,7 @@ class GameNamespace(BaseNamespace):
             game_mechanics._send_initial_game_state()
         else:
             game.start()
-            game_mechanics._send_game_start()
+            game_mechanics._send_game_running()
 
     def on_start_unconfirm(self, game_id):
         game = GameTable.get_game(game_id)

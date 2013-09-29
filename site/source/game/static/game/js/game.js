@@ -56,8 +56,8 @@ djagon.game.Game.prototype = {
             self.draw(state);
         });
 
-        socket.on('game_start', function(state) {
-            console.log('game_start', 'received');
+        socket.on('game_running', function(state) {
+            console.log('game_running', 'received');
             self.gameState = 'playing';
             self.currentState = state;
             self.draw(state);
