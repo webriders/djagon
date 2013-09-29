@@ -95,7 +95,7 @@ class GameMechanics(object):
             self.send_user_message("error", "You cheat!")
             return # you cheat, guy
 
-        player.hand.pop(card)
+        player.remove_card_from_hand(card)
         self.game.deck.put_card(card)
         self.game.current_lead = player.id
         self.game.lead_to_next_player()
