@@ -1,4 +1,4 @@
-from source.game.packets import PlayersGameStatePacketData, GameInitialStatePacketData
+from source.game.packets import GameState, InitialGameState
 from source.game.player import Player
 from source.game.game import Game
 
@@ -41,7 +41,7 @@ class GameMechanics(object):
                 continue
             if self.game.game_id == socket.session['game_id']:
                 player_id = socket['player_id']
-                data = PlayersGameStatePacketData(player_id, self.game)
+                data = GameState(player_id, self.game)
                 pkt = dict(type="event", name=self.EVENT_UPDATE_STATE, args=data, endpoint=self.ns_name)
                 socket.send_packet(pkt)
                 
@@ -50,10 +50,10 @@ class GameMechanics(object):
             if 'game_id' not in socket.session:
                 continue
             if self.game.game_id == socket.session['game_id']:
-                data = GameInitialStatePacketData(self.game)
                 player_id = self.socket.session['player_id']
+                data = InitialGameState(player_id, self.game)
                 pkt = dict(type="event", name=self.EVENT_INITIAL_STATE,
-                           args={'player_id':player_id}.update(data),
+                           args=data,
                            endpoint=self.ns_name)
                 socket.send_packet(pkt)
 

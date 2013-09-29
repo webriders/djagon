@@ -3,8 +3,6 @@ from socketio.sdjango import namespace
 from source.game.mechanics import GameMechanics
 from source.game.models import GameTable
 
-from socketio.mixins import BroadcastMixin
-
 
 @namespace('/game')
 class GameNamespace(BaseNamespace):
