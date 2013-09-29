@@ -11,7 +11,7 @@ class GameState(dict):
         }
 
         # uno
-        if game.players[game.previous_lead].cards_number == 1:
+        if game.previous_lead and game.players[game.previous_lead].cards_number == 1:
             for x in data['players_list']:
                 if x['id'] == game.previous_lead:
                     x['uno'] = True

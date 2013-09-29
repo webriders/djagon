@@ -25,8 +25,8 @@ class Game(object):
         self.direction = self.DIRECTION_DIRECT
         self.deck = UnoDeck()
         self.players = OrderedDict()
-        _current_lead = 0
-        _previous_lead = 0
+        self._current_lead = None
+        self._previous_lead = None
 
     @property
     def current_lead(self):
@@ -37,7 +37,7 @@ class Game(object):
         return self._previous_lead
 
     @current_lead.setter
-    def set_current_lead(self, x):
+    def current_lead(self, x):
         self._previous_lead = self._current_lead
         self._current_lead = x
 
@@ -72,7 +72,7 @@ class Game(object):
 
     def start(self):
         self.status = GameTable.STATUS_ACTIVE
-        self.current_lead = random.randrange(self.players_number)
+        self.current_lead = random.choice(self.players.keys())
         for player in list(self.players.values()):
             player.hand = self.deck.draw_cards(self.INIT_CARDS_NUMBER)
         self.save()
