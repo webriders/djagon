@@ -15,6 +15,7 @@ except ImportError:
 class Game(object):
     INIT_CARDS_NUMBER = 5
     DIRECTION_DIRECT = 1
+    PLAYERS_LIMIT = 7
 
     current_lead = 0  # index of current player
 
@@ -32,7 +33,11 @@ class Game(object):
         game.prev_state = game.state if self.last_turn_cheated else ""
         game.state = jsonpickle.encode(self)
         game.status = self.status
+        game.players_number = self.players_number
         game.save()
+
+    def over_players_limit(self):
+        return self.players_number >= self.PLAYERS_LIMIT
 
     def join_game(self):
         self.status = GameTable.STATUS_OPEN

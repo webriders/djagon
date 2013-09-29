@@ -13,6 +13,7 @@ class GameTable(models.Model):
     state = JSONField(null=True, blank=True)
     prev_state = JSONField(null=True, blank=True)
     status = models.SmallIntegerField(default=STATUS_IDLE)
+    players_number = models.SmallIntegerField(default=0)
 
     @classmethod
     def get_game(cls, game_id):
