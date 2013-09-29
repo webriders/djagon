@@ -70,7 +70,7 @@
     .actions {
         position: absolute;
         left: 50%;
-        top: 50%;
+        top: 140px;
 
         .create-game, .join-game {
             display: block;
@@ -82,7 +82,7 @@
             font: bold 16px/29px Arial, Liberation Sans, sans-serif;
             padding: 10px 0 11px;
             position: absolute;
-            bottom: 240px;
+            top: 0;
             color: #fff;
             cursor: pointer;
             text-shadow: 1px 2px 0 rgba(0, 0, 0, .6);

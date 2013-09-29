@@ -13,4 +13,3 @@ class GameNamespace(BaseNamespace):
 
         game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
         game_mechanics.on_join_game()
-
