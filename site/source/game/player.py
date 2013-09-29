@@ -15,3 +15,11 @@ class Player(object):
     @property
     def cards_number(self):
         return len(self.hand)
+
+    def get_data(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'cards_number': self.cards_number,
+            'lamp': self.lamp
+        }

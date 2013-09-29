@@ -1,3 +1,4 @@
+from source.game.packets import PlayersGameStatePacketData, GameInitialStatePacketData
 from source.game.player import Player
 from source.game.game import Game
 
@@ -17,7 +18,8 @@ class GameMechanics(object):
         'uno': 'handle_uno',
     }
 
-    EVENT_UPDATE_GAME_STATE = 'update_game_state'
+    EVENT_UPDATE_STATE = 'update_state'
+    EVENT_INITIAL_STATE = 'initial_state'
 
     def __init__(self, game, socket, ns_name):
         assert isinstance(game, Game)
@@ -31,14 +33,18 @@ class GameMechanics(object):
                 continue
             if self.game.game_id == socket.session['game_id']:
                 player_id = socket['player_id']
-                pkt = self._form_user_packet(player_id, self.EVENT_UPDATE_GAME_STATE)
+                data = PlayersGameStatePacketData(player_id, self.game)
+                pkt = dict(type="event", name=self.EVENT_UPDATE_STATE, args=data, endpoint=self.ns_name)
                 socket.send_packet(pkt)
-
-    def _form_user_packet(self, player_id, event):
-        args = { p.id: p.cards_number for p in self.game.players }
-        args['my_hand'] = self.game.players[player_id].hand
-        pkt = dict(type="event", name=event, args=args, endpoint=self.ns_name)
-        return pkt
+                
+    def _send_initial_game_state(self):
+        for sessid, socket in self.socket.server.sockets.iteritems():
+            if 'game_id' not in socket.session:
+                continue
+            if self.game.game_id == socket.session['game_id']:
+                data = GameInitialStatePacketData(self.game)
+                pkt = dict(type="event", name=self.EVENT_INITIAL_STATE, args=data, endpoint=self.ns_name)
+                socket.send_packet(pkt)
 
     def make_turn(self, player, card):
         assert isinstance(player, Player)
