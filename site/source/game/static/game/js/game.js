@@ -34,6 +34,8 @@ djagon.game.Game.prototype = {
     currentPlayerId: null,
 
     cardsURL: '/static/game/img/cards/', // sorry for this, we have no time, DjangoDash 2013 time is running out
+    cardWidth: 141,
+    cardHeight: 220,
 
     init: function(cfg) {
         $.extend(true, this, cfg);
@@ -94,6 +96,8 @@ djagon.game.Game.prototype = {
     },
 
     createNewPlayers: function(players) {
+        console.log('createNewPlayers', players[0].length);
+
         var self = this;
 
         var el = players.append('div')
@@ -135,6 +139,8 @@ djagon.game.Game.prototype = {
     },
 
     removeOldPlayers: function(players) {
+        console.log('removeOldPlayers', players[0].length);
+
         players.each(function() {
             $(this).fadeOut().promise().done(function() {
                 $(this).remove();
@@ -143,6 +149,8 @@ djagon.game.Game.prototype = {
     },
 
     updateCurrentPlayers: function(players) {
+        console.log('updateCurrentPlayers', players[0].length);
+
         var self = this;
 
         players
@@ -214,8 +222,8 @@ djagon.game.Game.prototype = {
 
     generateCardsData: function(playersData) {
         var container = this.container,
-            cardWidth = 141,
-            cardHeight = 220;
+            cardWidth = this.cardWidth,
+            cardHeight = this.cardHeight;
 
         var yourCardsData = [],
             otherCardsData = [];
@@ -274,12 +282,15 @@ djagon.game.Game.prototype = {
         console.log('createYourNewCards', cards[0].length);
 
         var self = this;
+        var initPos = this.getDecksPosition();
 
         cards.append('div')
             .classed('card your', true)
             .on("dblclick", function(d) {
                 self.makeTurn(d.id);
             })
+            .style('left', initPos.stack.x + 'px')
+            .style('top', initPos.stack.y + 'px')
             .append('img')
             .attr('src', function(d) {
                 var color = d.color,
@@ -306,11 +317,16 @@ djagon.game.Game.prototype = {
     removeYourOldCards: function(cards) {
         console.log('removeYourOldCards', cards[0].length);
 
-        cards.each(function() {
-            $(this).fadeOut().promise().done(function() {
-                $(this).remove();
+        var initPos = this.getDecksPosition();
+
+        cards.transition()
+            .style('left', initPos.deck.x + 'px')
+            .style('top', initPos.deck.y + 'px')
+            .each('done', function() {
+                $(this).fadeOut().promise().done(function() {
+                    $(this).remove();
+                });
             });
-        });
     },
 
     updateYourCurrentCards: function(cards) {
@@ -318,8 +334,8 @@ djagon.game.Game.prototype = {
 
         var maxWidth = this.container.width(),
             maxHeight = this.container.height(),
-            cardWidth = 141,
-            cardHeight = 220;
+            cardWidth = this.cardWidth,
+            cardHeight = this.cardHeight;
 
         cards.style('left', maxWidth / 2 - cardWidth / 2)
             .style('top', maxHeight / 2 - cardHeight / 2);
@@ -348,9 +364,12 @@ djagon.game.Game.prototype = {
         console.log('createOtherNewCards', cards[0].length);
 
         var cardBackSide = this.cardsURL + 'card-back-side.png';
+        var initPos = this.getDecksPosition();
 
         cards.append('div')
             .classed('card other', true)
+            .style('left', initPos.stack.x + 'px')
+            .style('top', initPos.stack.y + 'px')
             .append('img')
             .attr('src', cardBackSide);
     },
@@ -358,23 +377,20 @@ djagon.game.Game.prototype = {
     removeOtherOldCards: function(cards) {
         console.log('removeOtherOldCards', cards[0].length);
 
-        cards.each(function() {
-            $(this).fadeOut().promise().done(function() {
-                $(this).remove();
+        var initPos = this.getDecksPosition();
+
+        cards.transition()
+            .style('left', initPos.deck.x + 'px')
+            .style('top', initPos.deck.y + 'px')
+            .each('done', function() {
+                $(this).fadeOut().promise().done(function() {
+                    $(this).remove();
+                });
             });
-        });
     },
 
     updateOtherCurrentCards: function(cards) {
         console.log('updateOtherCurrentCards', cards[0].length);
-
-        var maxWidth = this.container.width(),
-            maxHeight = this.container.height(),
-            cardWidth = 141,
-            cardHeight = 220;
-
-        cards.style('left', maxWidth / 2 - cardWidth / 2)
-            .style('top', maxHeight / 2 - cardHeight / 2);
 
         cards.transition()
             .style('left', function(d) {
@@ -383,6 +399,28 @@ djagon.game.Game.prototype = {
             .style('top', function(d) {
                 return d.y + 'px';
             });
+    },
+
+    drawDecks: function() {
+    },
+
+    getDecksPosition: function() {
+        var halfWidth = this.container.width() / 2,
+            halfHeight = this.container.height() / 2,
+            cardWidth = this.cardWidth,
+            cardHeight = this.cardHeight,
+            margin = 10;
+
+        return {
+            deck: {
+                x: halfWidth - cardWidth - margin,
+                y: halfHeight - cardHeight / 2
+            },
+            stack: {
+                x: halfWidth + margin,
+                y: halfHeight - cardHeight / 2
+            }
+        }
     },
 
     initResize: function() {
