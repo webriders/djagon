@@ -1,7 +1,9 @@
 import uuid
+from django.utils.http import urlquote
 
 
 class Player(object):
+    AVATAR_URL = 'http://robohash.org/'
 
     def __init__(self, name="", hand=None):
         self.id = str(uuid.uuid4())[:6].upper()
@@ -16,10 +18,18 @@ class Player(object):
     def cards_number(self):
         return len(self.hand)
 
-    def get_data(self):
-        return {
+    @property
+    def avatar(self):
+        return self.AVATAR_URL + urlquote(self.name)
+
+    def get_data(self, player_id=None):
+        data = {
             'id': self.id,
             'name': self.name,
+            'avatar': self.avatar,
             'cards_number': self.cards_number,
             'lamp': self.lamp
         }
+        if self.id == player_id:
+            data['you'] = True
+        return data

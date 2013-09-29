@@ -1,22 +1,21 @@
 from source.game.game import Game
 
 
-class PlayersGameStatePacketData(dict):
+class GameState(dict):
     def __new__(cls, player_id, game):
         return {
             'player_id': player_id,
             'own_hand': game.players[player_id].hand,
             'lead_player_id': game.get_lead_player().id,
-            'cards_amount': {p.id: p.cards_number for p in game.players.values() },
+            'opponent_cards': { p.id: [card['id'] for card in p.hand] for p in game.players.values() },
         }
 
 
-class GameInitialStatePacketData(dict):
+class InitialGameState(dict):
 
-    def __new__(cls, game):
+    def __new__(cls, player_id, game):
         assert isinstance(game, Game)
-        players = [p.get_data() for p in game.players.values()]
+        players = [p.get_data(player_id) for p in game.players.values()]
         return {
-            'players_number': game.players_number,
             'players_list': players,
         }
