@@ -64,6 +64,10 @@ djagon.game.Game.prototype = {
             self.currentState = state;
             self.draw(state);
         });
+
+        socket.on('user_message', function(o) {
+            djagon.messages[o.type](o.msg);
+        });
     },
 
     getSessionId: function() {

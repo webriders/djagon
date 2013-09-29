@@ -15,6 +15,12 @@ class Player(object):
     def draw_cards(self, cards):
         self.hand = self.hand + cards
 
+    def remove_card_from_hand(self, card):
+        for x in range(len(self.hand)):
+            if self.hand[x]["id"] == card["id"]:
+                del self.hand[x]
+                return
+
     @property
     def cards_number(self):
         return len(self.hand)

@@ -21,6 +21,7 @@ class GameMechanics(object):
 
     EVENT_INITIAL_STATE = 'initial_state'
     EVENT_GAME_RUNNING = 'game_running'
+    EVENT_USER_MESSAGE = 'user_message'
 
     def __init__(self, game, socket, session, ns_name):
         assert isinstance(game, Game)
@@ -90,15 +91,32 @@ class GameMechanics(object):
         self.game.lead_to_next_player()
         self._send_game_running()
 
+    def send_user_message(self, message_type, message_content):
+        pkt = {
+            "type": "event",
+            "name": self.EVENT_USER_MESSAGE,
+            "args": {
+                "type": message_type,
+                "msg": message_content
+            },
+            "endpoint": self.ns_name
+        }
+        self.socket.send_packet(pkt)
+
+
     def handle_turn(self, player, card):
         if not self.turn_is_fair(card):
-            self.game.last_turn_cheated = True
-        else:
-            self.game.last_turn_cheated = False
+            self.send_user_message("error", "Move is not correct!")
+            return
+
+        # anyway
+        self.game.deck.put_card(card)
+        player.remove_card_from_hand(card)
+        #
 
         if card['value'] in self.SPECIFIC_CARD_HANDLERS.keys():
             spec_handler = getattr(self, self.SPECIFIC_CARD_HANDLERS[card['value']])
-            spec_handler(self)
+            spec_handler()
         else:
             self.game.lead_to_next_player()
         self._send_game_running()
@@ -111,11 +129,10 @@ class GameMechanics(object):
             return True
         if card['color'] == 'black':
             return True
-        return False
+        return False if top_card else True
 
     def handle_skip(self):
         self.game._lead_to_next_player()
-        self.game.lead_to_next_player()
 
     def handle_reverse(self):
         self.game.change_direction()

@@ -2,6 +2,7 @@ djagon = window.djagon || {};
 
 /* jQuery Noty modifications */
 $.noty.defaults.layout = 'topCenter';
+$.noty.defaults.timeout = 1500;
 
 djagon.messages = {
     alert: function(text) {
