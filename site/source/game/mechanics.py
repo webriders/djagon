@@ -6,7 +6,7 @@ from source.game.game import Game
 class GameMechanics(object):
 
     SPECIFIC_CARD_HANDLERS = {
-        '7': 'handle_seven',
+        #'7': 'handle_seven',
         'skip': 'handle_skip',
         'reverse': 'handle_reverse',
         'draw-two': 'handle_draw_two',
@@ -80,6 +80,15 @@ class GameMechanics(object):
         else:
             self.handle_turn(player, card)
 
+        self.handle_if_end_of_round()
+
+    def handle_if_end_of_round(self):
+        for x in self.game.players:
+            if self.game.players[x].cards_number == 0:
+                self.announce_score()
+                self.game.start()
+                self._send_game_running()
+
     def handle_throw_in(self, player, card):
         top_card = self.game.deck.get_top_card()
         if not (card['color'] == top_card['color'] and card['value'] == top_card['value']):
@@ -102,7 +111,6 @@ class GameMechanics(object):
         }
         for sessid, socket in self.socket.server.sockets.iteritems():
             socket.send_packet(pkt)
-
 
     def handle_turn(self, player, card):
         if not self.turn_is_fair(card):
@@ -149,5 +157,6 @@ class GameMechanics(object):
         next_player.draw_cards(cards)
 
     def announce_score(self):
+        self.game.summarize_score()
         for player in self.game.players.values():
             self.send_user_message('info', 'Player %s scored %s points' % player.score)

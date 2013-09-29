@@ -82,6 +82,7 @@ class Game(object):
         return player
 
     def start(self):
+        self.deck = UnoDeck()
         self.status = GameTable.STATUS_ACTIVE
         self.current_lead = random.choice(self.players.keys())
         for player in list(self.players.values()):
