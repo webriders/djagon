@@ -9,6 +9,8 @@ class GameNamespace(BaseNamespace):
 
     def on_join_game(self, game_id):
         game = GameTable.get_game(game_id)
+        if game is None: return # temp
+
         player = game.join_game()
         self.session['game_id'] = game_id
         self.session['player_id'] = player.id
