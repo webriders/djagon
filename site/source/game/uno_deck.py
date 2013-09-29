@@ -3,11 +3,12 @@ import random
 
 
 class UnoDeck(object):
-    stack = [] # hidden cards
-    deck = [] # shown cards
+    stack = None  # hidden cards
+    deck = None  # shown cards
 
     def __init__(self):
         self.stack = generate_cards()
+        self.deck = []
         random.shuffle(self.stack)
 
     def draw_cards(self, n):

@@ -3,10 +3,10 @@ import uuid
 
 class Player(object):
 
-    def __init__(self, name="", hand=[]):
+    def __init__(self, name="", hand=None):
         self.id = str(uuid.uuid4())[:6].upper()
         self.name = name
-        self.hand = hand
+        self.hand = hand or []
         self.lamp = False
 
     def draw_cards(self, cards):
