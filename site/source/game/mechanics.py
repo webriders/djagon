@@ -19,9 +19,8 @@ class GameMechanics(object):
         'uno': 'handle_uno',
     }
 
-    EVENT_UPDATE_STATE = 'update_state'
     EVENT_INITIAL_STATE = 'initial_state'
-    EVENT_GAME_START = 'game_running'
+    EVENT_GAME_RUNNING = 'game_running'
 
     def __init__(self, game, socket, session, ns_name):
         assert isinstance(game, Game)
@@ -49,7 +48,7 @@ class GameMechanics(object):
     def on_throw_in(self, card_id):
         player_id = self.session['player_id']
         player = self.game.players[player_id]
-        card = get_card_by_id(self.player.hand, card_id)
+        card = get_card_by_id(player.hand, card_id)
         top_card = self.game.deck.get_top_card()
 
         if not (card['color'] == top_card['color'] and card['value'] == top_card['value']):
@@ -82,7 +81,7 @@ class GameMechanics(object):
 
                 pkt = {
                     "type": "event",
-                    "name": self.EVENT_GAME_START,
+                    "name": self.EVENT_GAME_RUNNING,
                     "args": data,
                     "endpoint": self.ns_name
                 }
