@@ -5,10 +5,12 @@ DEBUG = TEMPLATE_DEBUG = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.abspath(os.path.join(SITE_ROOT, 'var', 'db', 'database-dev.sqlite')),
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db_djagon',
+        'USER': '', # set your username
+        'PASSWORD': '', # set your password
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
