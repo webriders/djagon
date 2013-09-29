@@ -16,12 +16,12 @@ class GameNamespace(BaseNamespace):
                 game_mechanics.on_leave_game()
         self.disconnect(silent=True)
 
-    def on_join_game(self, game_id):
+    def on_join_game(self, game_id, sessid):
         game = GameTable.get_game(game_id)
         if game is None: return
 
         game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-        game_mechanics.on_join_game()
+        game_mechanics.on_join_game(sessid)
 
     def on_start_confirm(self, game_id):
         game = GameTable.get_game(game_id)

@@ -44,7 +44,7 @@ djagon.game.Game.prototype = {
         var socket = this.socket = io.connect(this.url);
 
         socket.on('connect', function() {
-            socket.emit('join_game', self.gameId);
+            socket.emit('join_game', self.gameId, self._get_sessid());
         });
 
         socket.on('initial_state', function(state) {
@@ -55,6 +55,13 @@ djagon.game.Game.prototype = {
         });
 
         socket.on('initial_state', function(state) {});
+    },
+
+    _get_sessid: function() {
+        if (!($.cookie('sessid'))) {
+            $.cookie('sessid', this.gameId + ':' + Math.floor(Math.random() * 100000 ));
+        }
+        return $.cookie('sessid');
     },
 
     drawPlayers: function(playersRawData) {

@@ -30,9 +30,9 @@ class GameMechanics(object):
         self.ns_name = ns_name
         self.player_id = self.session.get('player_id')
 
-    def on_join_game(self):
+    def on_join_game(self, sessid):
         if not hasattr(self.session, 'game_id') or self.game.game_id != self.session['game_id']:
-            player = self.game.join_game()
+            player = self.game.join_game(sessid)
             self.session['game_id'] = self.game.game_id
             self.session['player_id'] = player.id
         self._send_initial_game_state()

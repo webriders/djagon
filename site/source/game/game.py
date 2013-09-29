@@ -27,6 +27,7 @@ class Game(object):
         self.direction = self.DIRECTION_DIRECT
         self.deck = UnoDeck()
         self.players = OrderedDict()
+        self.user_sessions = {}
 
     def save(self):
         game, created = GameTable.objects.get_or_create(game_id=self.game_id)
@@ -39,17 +40,22 @@ class Game(object):
     def over_players_limit(self):
         return self.players_number >= self.PLAYERS_LIMIT
 
-    def join_game(self):
+    def join_game(self, sessid):
+        if sessid in self.user_sessions:
+            player_id = self.user_sessions[sessid]
+            return self.players[player_id]
         self.status = GameTable.STATUS_OPEN
         default_name = "Player %s" % (self.players_number+1)
         player = Player(name=default_name)
         self.players[player.id] = player
+        self.user_sessions[sessid] = player.id
         self.save()
         return player
 
     def leave_game(self, player_id):
         try:
             player = self.players.pop(player_id)
+            self.user_sessions.pop(player_id)
         except KeyError:
             return None
         if self.players_number == 0:
