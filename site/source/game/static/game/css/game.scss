@@ -6,6 +6,7 @@
 
     .player-info {
         position: absolute;
+        z-index: 1;
 
         .avatar {
             width: 80px;
@@ -15,6 +16,7 @@
             background-color: #df0012;
             margin-left: -44px;
             margin-top: -44px;
+            box-shadow: 0 0 0 5px $dark-red, 0 0 8px 2px rgba(0, 0, 0, .5);
         }
 
         .player-name {
@@ -90,6 +92,23 @@
                 visibility: visible;
                 opacity: 1;
             }
+        }
+    }
+
+    .card {
+        position: absolute;
+        background-color: #fff;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, .3);
+        overflow: hidden;
+        box-shadow: 2px 4px 8px rgba(0, 0, 0, .3);
+        width: 141px;
+        height: 220px;
+
+        img {
+            width: 141px;
+            height: 220px;
+            vertical-align: top;
         }
     }
 }
