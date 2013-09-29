@@ -43,7 +43,6 @@ a {
     z-index: 1;
     left: 0;
     top: 0;
-    width: 100%;
 
     .title {
         float: left;
@@ -71,6 +70,7 @@ a {
     bottom: 0;
     width: 100%;
     padding: 40px;
+    font-size: 13px;
     @include box-sizing(border-box);
 
     .copyrights {

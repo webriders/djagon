@@ -54,7 +54,6 @@ class GameNamespace(BaseNamespace):
         game.save()
 
         game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-
         game_mechanics._send_initial_game_state()
 
     def on_make_turn(self, game_id, card_id):

@@ -25,8 +25,13 @@ djagon.game.Game.prototype = {
     /** @type {io.Socket} */
     socket: null,
 
-    // last state returned from server
+    // last state of the table (all players and cards) returned from server
     currentState: null,
+
+    // state of the game: 'before', 'playing', 'after'
+    gameState: 'before',
+
+    currentPlayerId: null,
 
     init: function(cfg) {
         $.extend(true, this, cfg);
@@ -43,17 +48,13 @@ djagon.game.Game.prototype = {
         });
 
         socket.on('initial_state', function(state) {
+            console.log('initial_state', 'received');
+            self.gameState = 'before';
             self.currentState = state;
             self.drawPlayers(state.players_list);
         });
-    },
 
-    initResize: function() {
-        var self = this;
-        $(window).on('resize', function() {
-            if (self.currentState)
-                self.drawPlayers(self.currentState.players_list);
-        });
+        socket.on('initial_state', function(state) {});
     },
 
     drawPlayers: function(playersRawData) {
@@ -68,9 +69,12 @@ djagon.game.Game.prototype = {
     },
 
     createNewPlayers: function(players) {
+        var self = this;
+
         var el = players.append('div')
             .classed('player-info', true);
 
+        // avatar
         el.append('img')
             .classed('avatar', true)
             .style('background-color', function(d) { return d.color; })
@@ -78,10 +82,25 @@ djagon.game.Game.prototype = {
                 return d.avatar;
             });
 
+        // title
         el.append('div')
             .classed('player-name', true)
             .append('span')
             .text(function(d) { return d.name; });
+
+        // "I'm ready" button
+        el.filter(function(d) { return d.you == true; })
+            .append('button')
+            .classed('ready-button', true)
+            .text('I am ready!')
+            .on('click', function() {
+                self.sendReadyState();
+
+            });
+
+        // "I'm ready" mark
+        el.append('div')
+            .classed('ready-mark', true);
     },
 
     removeOldPlayers: function(players) {
@@ -93,9 +112,20 @@ djagon.game.Game.prototype = {
     },
 
     updateCurrentPlayers: function(players) {
-        players.transition()
+        var self = this;
+
+        players
+            .each(function(d) {
+                var readyButton = $(this).find('.ready-button'),
+                    readyMark = $(this).find('.ready-mark');
+
+                readyButton[self.gameState == 'before' && d.you == true && d.lamp == false ? 'addClass' : 'removeClass']('active');
+                readyMark[self.gameState == 'before' && d.lamp == true ? 'addClass' : 'removeClass']('active');
+            })
+            .transition()
             .style('left', function(d) { return d.x + 'px'; })
-            .style('top', function(d) { return d.y + 'px'; });
+            .style('top', function(d) { return d.y + 'px'; })
+
     },
 
     generatePlayersData: function(players) {
@@ -119,13 +149,11 @@ djagon.game.Game.prototype = {
             // set position
             $.extend(data, _position(i - yourPlayerIndex));
 
-            // update avatar
-            if (!data.avatar)
-                data.avatar = 'http://robohash.org/' + encodeURI(data.name);
-
             // random color
-            var colors = ['#df0012', '#009a54', '#0188cc', '#ffdd00', '#fff', '#000', '#f1b12b'];
+            var colors = ['#df0012', '#009a54', '#0188cc', '#ffdd00', '#fff', '#aaa', '#f1b12b'];
             data.color = colors[i % colors.length];
+
+            data.you = !!data.you;
 
             newData.push(data);
         });
@@ -147,6 +175,24 @@ djagon.game.Game.prototype = {
         }
 
         return newData;
+    },
+
+    initResize: function() {
+        var self = this;
+
+        $(window).on('resize', function() {
+            if (self.currentState)
+                self.drawPlayers(self.currentState.players_list);
+        });
+    },
+
+    sendReadyState: function() {
+        if (this.gameState != 'before') {
+            alert("You can't do this now, sorry...");
+        } else {
+            console.log('start_confirm', 'sent');
+            this.socket.emit("start_confirm", this.gameId);
+        }
     },
 
     drawCards: function() {
