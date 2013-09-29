@@ -1,5 +1,6 @@
 from socketio.namespace import BaseNamespace
 from socketio.sdjango import namespace
+from source.game.cards import get_card_by_id
 from source.game.mechanics import GameMechanics
 from source.game.models import GameTable
 
@@ -56,3 +57,13 @@ class GameNamespace(BaseNamespace):
 
         game_mechanics._send_initial_game_state()
 
+    def on_make_turn(self, game_id, card_id):
+        game = GameTable.get_game(game_id)
+        if game is None:
+            return
+
+        player = game.players[self.session['player_id']]
+        card = get_card_by_id(card_id)
+
+        game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
+        game_mechanics.make_turn(player, card)

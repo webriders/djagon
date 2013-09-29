@@ -49,7 +49,8 @@ class GameMechanics(object):
             if self.game.game_id == socket.session['game_id']:
                 player_id = socket['player_id']
                 data = GameState(player_id, self.game)
-                pkt = dict(type="event", name=self.EVENT_UPDATE_STATE, args=data, endpoint=self.ns_name)
+                pkt = dict(type="event", name=self.EVENT_UPDATE_STATE, endpoint=self.ns_name)
+                pkt["args"] = data
                 socket.send_packet(pkt)
                 
     def _send_initial_game_state(self):
@@ -60,8 +61,8 @@ class GameMechanics(object):
                 player_id = self.socket.session['player_id']
                 data = InitialGameState(player_id, self.game)
                 pkt = dict(type="event", name=self.EVENT_INITIAL_STATE,
-                           args=data,
                            endpoint=self.ns_name)
+                pkt["args"] = data
                 socket.send_packet(pkt)
 
     def _send_game_start(self):
@@ -70,7 +71,7 @@ class GameMechanics(object):
                 continue
             if self.game.game_id == socket.session['game_id']:
                 player_id = self.socket.session['player_id']
-                data = InitialGameState(player_id, self.game)
+                data = GameState(player_id, self.game)
 
                 pkt = {
                     "type": "event",
