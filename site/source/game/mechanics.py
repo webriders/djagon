@@ -31,7 +31,7 @@ class GameMechanics(object):
     def on_join_game(self):
         if not hasattr(self.session, 'game_id') or self.game.game_id != self.session['game_id']:
             player = self.game.join_game()
-            self.session['game_id'] = self.game_id
+            self.session['game_id'] = self.game.game_id
             self.session['player_id'] = player.id
         self._send_initial_game_state()
 
