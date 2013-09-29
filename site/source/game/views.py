@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.views.generic.base import RedirectView, TemplateView
+from django.conf import settings
 from source.game.uno_game import UnoGame
 
 
@@ -18,6 +19,7 @@ class PlayGameView(TemplateView):
     def get_context_data(self, **kwargs):
         data = super(PlayGameView, self).get_context_data(**kwargs)
         data['game_id'] = self.kwargs.get('game_id')
+        data['game_url'] = settings.GAME_SOCKET_URL
         return data
 
 play_game = PlayGameView.as_view()

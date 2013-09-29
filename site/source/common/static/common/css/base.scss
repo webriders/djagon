@@ -38,8 +38,13 @@ a {
         width: 380px;
         height: 150px;
         overflow: hidden;
-        text-indent: -1000px;
         background: url(../img/logo.png) no-repeat 0 0;
+
+        a {
+            display: block;
+            height: 150px;
+            text-indent: -1000px;
+        }
     }
 
     .slogan {
