@@ -86,6 +86,7 @@ class Game(object):
         self.current_lead = random.choice(self.players.keys())
         for player in list(self.players.values()):
             player.hand = self.deck.draw_cards(self.INIT_CARDS_NUMBER)
+        self.deck.put_card(self.deck.draw_card())
         self.save()
 
     def get_lead_player(self):

@@ -45,20 +45,6 @@ class GameMechanics(object):
         if player:
             self._send_game_running()
 
-    def on_throw_in(self, card_id):
-        player_id = self.session['player_id']
-        player = self.game.players[player_id]
-        card = get_card_by_id(player.hand, card_id)
-        top_card = self.game.deck.get_top_card()
-
-        if not (card['color'] == top_card['color'] and card['value'] == top_card['value']):
-            return
-
-        self.game.deck.put_card(card)
-        self.game.current_lead = player_id
-        self.game.lead_to_next_player()
-        self._send_game_running()
-
     def _send_initial_game_state(self):
         for sessid, socket in self.socket.server.sockets.iteritems():
             if 'game_id' not in socket.session:
@@ -89,7 +75,20 @@ class GameMechanics(object):
 
     def make_turn(self, player, card):
         assert isinstance(player, Player)
-        self.handle_turn(player, card)
+        if self.game.current_lead != player.id:
+            self.handle_throw_in(player, card)
+        else:
+            self.handle_turn(player, card)
+
+    def handle_throw_in(self, player, card):
+        top_card = self.game.deck.get_top_card()
+        if not (card['color'] == top_card['color'] and card['value'] == top_card['value']):
+            return # you cheat, guy
+
+        self.game.deck.put_card(card)
+        self.game.current_lead = player.id
+        self.game.lead_to_next_player()
+        self._send_game_running()
 
     def handle_turn(self, player, card):
         if not self.turn_is_fair(card):

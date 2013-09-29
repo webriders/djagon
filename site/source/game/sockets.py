@@ -67,11 +67,3 @@ class GameNamespace(BaseNamespace):
 
         game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
         game_mechanics.make_turn(player, card)
-
-    def on_throw_in(self, game_id, card_id):
-        game = GameTable.get_game(game_id)
-        if game is None:
-            return
-
-        game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-        game_mechanics.on_throw_in(card_id)
