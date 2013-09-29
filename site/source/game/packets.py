@@ -16,6 +16,8 @@ class InitialGameState(dict):
     def __new__(cls, player_id, game):
         assert isinstance(game, Game)
         players = [p.get_data(player_id) for p in game.players.values()]
+        if len(players) == 1:
+            del players[0]["lamp"]
         return {
             'players_list': players,
         }
