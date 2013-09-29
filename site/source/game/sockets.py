@@ -64,6 +64,11 @@ class GameNamespace(BaseNamespace):
 
         player = game.players[self.session['player_id']]
         card = get_card_by_id(player.hand, card_id)
+        if not card:
+            card = get_card_by_id(game.deck.stack, card_id)
 
         game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-        game_mechanics.make_turn(player, card)
+        if card:
+            game_mechanics.make_turn(player, card)
+        else:
+            game_mechanics.send_user_message("error", "You make something wrong!")
