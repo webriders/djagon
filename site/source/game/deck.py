@@ -31,4 +31,4 @@ class UnoDeck(object):
         self.deck = [top_card]
 
     def get_top_card(self):
-        return self.deck[-1]
+        return self.deck[-1] if len(self.deck) > 0 else None
