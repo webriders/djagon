@@ -7,7 +7,8 @@ class GameState(dict):
         data = {
             'player_id': player_id,
             'lead_player_id': game.get_lead_player().id,
-            'players_list': [p.get_data(player_id) for p in game.players.values()]
+            'players_list': [p.get_data(player_id) for p in game.players.values()],
+            'top_card': game.deck.get_top_card(),
         }
 
         # uno

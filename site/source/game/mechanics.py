@@ -35,7 +35,10 @@ class GameMechanics(object):
             player = self.game.join_game(sessid)
             self.session['game_id'] = self.game.game_id
             self.session['player_id'] = player.id
-        self._send_initial_game_state()
+        if self.game.is_active():
+            self._send_game_state()
+        else:
+            self._send_initial_game_state()
 
     def on_leave_game(self):
         player = self.game.leave_game(self.player_id)

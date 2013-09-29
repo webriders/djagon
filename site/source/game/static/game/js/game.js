@@ -270,6 +270,10 @@ djagon.game.Game.prototype = {
         this.updateYourCurrentCards(d3.select(this.container[0]).selectAll('.card.your'));
     },
 
+    makeTurn: function(card_id) {
+         this.socket.emit("make_turn", this.gameId, card_id);
+    },
+
     createYourNewCards: function(cards) {
         console.log('createYourNewCards', cards[0].length);
 

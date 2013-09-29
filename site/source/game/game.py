@@ -111,3 +111,6 @@ class Game(object):
     @property
     def players_number(self):
         return len(self.players)
+
+    def is_active(self):
+        return self.status == GameTable.STATUS_ACTIVE

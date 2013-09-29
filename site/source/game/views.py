@@ -40,10 +40,10 @@ class PlayGameView(TemplateView):
             return HttpResponseRedirect(reverse('djagon:home'))
         if game.status == game.STATUS_ACTIVE:
             if not sessid or not game.resolve().user_is_member(sessid):
-                messages.warning(request, "This game has already been started 2")
+                messages.warning(request, "This game has already been started")
                 return HttpResponseRedirect(reverse('djagon:home'))
         elif not game.status in [game.STATUS_OPEN, game.STATUS_IDLE]:
-            messages.warning(request, "This game has already been started 1")
+            messages.warning(request, "This game has already been started")
             return HttpResponseRedirect(reverse('djagon:home'))
 
         return super(PlayGameView, self).get(self, request, *args, **kwargs)
