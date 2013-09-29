@@ -6,6 +6,8 @@ values = [str(x) for x in range(1, 10)] * 2 + ['reverse', 'skip', 'draw-two'] * 
 wild_cards = [] #[{'color': 'black', 'value': 'wild'}] * 4
 draw_four_cards = [] #[{'color': 'black', 'value': 'draw-four'}] * 4
 
+SCORE_PICTURES = 10
+SCORE_WILD = 20
 
 def generate_cards():
     cards = wild_cards + draw_four_cards
@@ -22,3 +24,11 @@ def get_card_by_id(cards, card_id):
         if x["id"] == card_id:
             return x
 
+
+def get_cards_score(card):
+    if card['value'] in range(1, 10):
+        return int(card['value'])
+    elif card['value'] in ['reverse', 'skip', 'draw-two']:
+        return SCORE_PICTURES
+    else:
+        return SCORE_WILD

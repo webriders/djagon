@@ -82,6 +82,7 @@ class Game(object):
         return player
 
     def start(self):
+        self.deck = UnoDeck()
         self.status = GameTable.STATUS_ACTIVE
         self.current_lead = random.choice(self.players.keys())
         for player in list(self.players.values()):
@@ -116,3 +117,8 @@ class Game(object):
 
     def is_active(self):
         return self.status == GameTable.STATUS_ACTIVE
+
+    def summarize_score(self):
+        for player in self.player.values():
+            player.count_score()
+        self.save()
