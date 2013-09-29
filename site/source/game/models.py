@@ -16,5 +16,8 @@ class GameTable(models.Model):
 
     @classmethod
     def get_game(cls, game_id):
-        json = cls.objects.get(game_id=game_id).state
+        try:
+            json = cls.objects.get(game_id=game_id).state
+        except GameTable.DoesNotExist:
+            return None
         return jsonpickle.decode(json)
