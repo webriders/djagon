@@ -26,6 +26,32 @@ a {
     @include background-image(radial-gradient(center, ellipse cover, #ee1c25 0%, #a61b1e 100%));
 }
 
+.page-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+
+    .title {
+        float: left;
+        margin-left: 10px;
+        width: 380px;
+        height: 150px;
+        overflow: hidden;
+        background: url(../img/logo.png) no-repeat 0 0;
+
+        a {
+            display: block;
+            height: 150px;
+            text-indent: -1000px;
+        }
+    }
+
+    .slogan {
+        display: none;
+    }
+}
+
 .page-footer {
     position: absolute;
     left: 0;

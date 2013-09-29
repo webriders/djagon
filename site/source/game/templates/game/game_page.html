@@ -1,0 +1,28 @@
+{% extends 'common/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block static %}
+    {{ block.super }}
+
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'game/css/game.scss' %}"/>
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'game/css/game_page.scss' %}"/>
+    {% endcompress %}
+
+    {% compress js %}
+        <script type="text/javascript" src="{% static 'common/libs/socket.io/socket.io.js' %}"></script>
+        <script type="text/javascript">WEB_SOCKET_SWF_LOCATION = '{% static 'common/libs/socket.io/WebSocketMain.swf' %}';</script>
+        <script type="text/javascript" src="{% static 'game/js/game.js' %}"></script>
+        <script type="text/javascript" src="{% static 'game/js/game_page.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+    <div class="game-table" id="game-table"
+         data-game-id="{{ game_id }}"
+         data-game-url="{{ game_url }}">
+        <!-- Dynamic content -->
+    </div>
+{% endblock %}
