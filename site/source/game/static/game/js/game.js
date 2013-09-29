@@ -64,7 +64,7 @@ djagon.game.Game.prototype = {
 
     getSessionId: function() {
         if (!($.cookie('sessid'))) {
-            $.cookie('sessid', this.gameId + ':' + Math.floor(Math.random() * 100000 ));
+            $.cookie('sessid', this.gameId + '-' + Math.floor(Math.random() * 100000 ));
         }
         return $.cookie('sessid');
     },
