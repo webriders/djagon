@@ -19,7 +19,13 @@
     <!-- Common scripts bundle -->
     {% compress js %}
         <script src="{% static 'common/libs/jquery/jquery.js' %}"></script>
-        <script src="{% static 'common/libs/d3/d3.js' %}"></script>
+        <script type="text/javascript" src="{% static 'common/libs/noty/jquery.noty.js' %}"></script>
+        <script type="text/javascript" src="{% static 'common/libs/noty/layouts/top.js' %}"></script>
+        <script type="text/javascript" src="{% static 'common/libs/noty/layouts/topLeft.js' %}"></script>
+        <script type="text/javascript" src="{% static 'common/libs/noty/layouts/topCenter.js' %}"></script>
+        <script type="text/javascript" src="{% static 'common/libs/noty/themes/default.js' %}"></script>
+        <script type="text/javascript" src="{% static 'common/libs/d3/d3.js' %}"></script>
+        <script type="text/javascript" src="{% static 'common/js/messages.js' %}"></script>
     {% endcompress %}
 
     <!-- Custom static bundle -->
@@ -29,6 +35,8 @@
 <body>
 
 <div class="page-container">
+    {% include 'common/messages.html' %}
+
     {% block header %}
         {% include 'common/header.html' %}
     {% endblock %}

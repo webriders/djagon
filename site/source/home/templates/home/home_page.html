@@ -4,12 +4,16 @@
 {% load compress %}
 
 {% block static %}
+    {{ block.super }}
+
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static 'home/css/home_page.scss' %}"/>
     {% endcompress %}
 
     {% compress js %}
-        <script type="text/javascript"></script>
+        <script type="text/javascript">
+            $.noty.defaults.layout = 'topLeft';
+        </script>
     {% endcompress %}
 {% endblock %}
 
