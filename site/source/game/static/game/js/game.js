@@ -324,14 +324,16 @@ djagon.game.Game.prototype = {
 
         var initPos = this.getDecksPosition();
 
-        cards.transition()
-            .style('left', initPos.deck.x + 'px')
-            .style('top', initPos.deck.y + 'px')
-            .each('done', function() {
+        cards.each(function() {
+            $(this).animate({
+                left: initPos.deck.x,
+                top: initPos.deck.y
+            }).promise().done(function() {
                 $(this).fadeOut().promise().done(function() {
                     $(this).remove();
                 });
             });
+        });
     },
 
     updateYourCurrentCards: function(cards) {
@@ -384,14 +386,16 @@ djagon.game.Game.prototype = {
 
         var initPos = this.getDecksPosition();
 
-        cards.transition()
-            .style('left', initPos.deck.x + 'px')
-            .style('top', initPos.deck.y + 'px')
-            .each('done', function() {
+        cards.each(function() {
+            $(this).animate({
+                left: initPos.deck.x,
+                top: initPos.deck.y
+            }).promise().done(function() {
                 $(this).fadeOut().promise().done(function() {
                     $(this).remove();
                 });
             });
+        });
     },
 
     updateOtherCurrentCards: function(cards) {
@@ -441,7 +445,7 @@ djagon.game.Game.prototype = {
                 card = $('<div class="card"><img alt="card"></div>').appendTo(this.deckEl);
             }
 
-            card = card.find('img');
+            var cardImg = card.find('img');
             var cardData = this.currentState.top_card;
 
             var color = cardData.color,
@@ -454,7 +458,9 @@ djagon.game.Game.prototype = {
             else
                 cardURL += 'card-' + cardData.value + '.png';
 
-            card.attr('src', cardURL)
+            //card.hide().delay(500).fadeIn();
+
+            cardImg.attr('src', cardURL)
                 .css({
                     'background-color': {
                         black: '#000',
@@ -464,8 +470,6 @@ djagon.game.Game.prototype = {
                         yellow: '#fedd03'
                     }[cardData.color]
                 });
-
-            this.deckEl.append()
         } else {
             this.deckEl.find('.card').fadeOut().promise().done(function() {
                 this.remove();

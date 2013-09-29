@@ -6,7 +6,7 @@
 
     .player-info {
         position: absolute;
-        z-index: 1;
+        z-index: 2;
 
         .avatar {
             width: 80px;
@@ -97,6 +97,7 @@
 
     .card {
         position: absolute;
+        z-index: 1;
         background-color: #fff;
         border-radius: 12px;
         border: 1px solid rgba(0, 0, 0, .3);
@@ -146,5 +147,9 @@
         border: 4px dashed $dark-red;
         margin-left: -8px;
         margin-top: -8px;
+
+        .card {
+            z-index: 0;
+        }
     }
 }
