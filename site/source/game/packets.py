@@ -8,8 +8,11 @@ class GameState(dict):
             'player_id': player_id,
             'lead_player_id': game.get_lead_player().id,
             'players_list': [p.get_data(player_id) for p in game.players.values()],
-            'top_card': game.deck.get_top_card(),
         }
+
+        top_card = game.deck.get_top_card()
+        if top_card:
+            data['top_card'] = game.deck.get_top_card()
 
         # uno
         if game.previous_lead and game.players[game.previous_lead].cards_number == 1:
