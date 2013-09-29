@@ -63,7 +63,7 @@ class GameNamespace(BaseNamespace):
             return
 
         player = game.players[self.session['player_id']]
-        card = get_card_by_id(card_id)
+        card = get_card_by_id(player.hand, card_id)
 
         game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
         game_mechanics.make_turn(player, card)

@@ -274,9 +274,16 @@ djagon.game.Game.prototype = {
         this.updateYourCurrentCards(d3.select(this.container[0]).selectAll('.card'));
     },
 
+    makeTurn: function(card_id) {
+         this.socket.emit("make_turn", this.gameId, card_id);
+    },
+
     createYourNewCards: function(cards) {
+        var self = this;
         cards.append('div')
-            .classed('card', true)
+            .classed('card', true).on("dblclick", function(d) {
+                self.makeTurn(d.id);
+            })
             .append('img')
             .attr('src', function(d) {
                 var color = d.color,
