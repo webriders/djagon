@@ -1,4 +1,8 @@
 from django.conf.urls import patterns, include, url
+import socketio.sdjango
+
+
+socketio.sdjango.autodiscover()
 
 
 djagon_urlpatterns = patterns(
@@ -9,5 +13,6 @@ djagon_urlpatterns = patterns(
 
 urlpatterns = patterns(
     '',
+    url('^socket\.io', include(socketio.sdjango.urls)),
     url('^', include(djagon_urlpatterns, namespace='djagon')),
 )

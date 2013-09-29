@@ -32,13 +32,6 @@ djagon.game.Game.prototype = {
         socket.on('connect', function() {
             socket.emit('join_game', self.gameId);
         });
-
-//        socket.on('update_state', function(data) {
-//            var area = self.area.empty();
-//            $.each(data.players, function(i, playerData) {
-//                area.append(new Player(playerData).render());
-//            })
-//        });
     }
 };
 
