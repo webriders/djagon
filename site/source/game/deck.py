@@ -17,7 +17,7 @@ class UnoDeck(object):
         return cards
 
     def draw_card(self):
-        if not self.stack:
+        if len(self.stack) == 0:
             self.turn_deck()
         return self.stack.pop()
 

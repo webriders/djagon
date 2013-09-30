@@ -157,7 +157,6 @@ class GameMechanics(object):
         return False if top_card else True
 
     def handle_skip(self):
-        self.game._lead_to_next_player()
         self.game.lead_to_next_player()
 
     def handle_reverse(self):
