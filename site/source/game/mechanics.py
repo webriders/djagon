@@ -166,6 +166,7 @@ class GameMechanics(object):
 
     def handle_skip(self):
         self.game._lead_to_next_player()
+        self.game.lead_to_next_player()
 
     def handle_reverse(self):
         self.game.change_direction()
@@ -184,4 +185,4 @@ class GameMechanics(object):
     def announce_score(self):
         self.game.summarize_score()
         for player in self.game.players.values():
-            self.broadcast_user_message('info', 'Player %s scored %s points' % player.score)
+            self.broadcast_user_message('info', 'Player %s scored %s points' % (player.name, player.score))
