@@ -16,13 +16,23 @@ class Player(object):
         self.score = 0
 
     def draw_cards(self, cards):
+        assert isinstance(cards, list)
         self.hand = self.hand + cards
+
+    def draw_card(self, card):
+        self.hand.append(card)
 
     def remove_card_from_hand(self, card):
         for x in range(len(self.hand)):
             if self.hand[x]["id"] == card["id"]:
                 del self.hand[x]
                 return
+
+    def can_move(self, top_card):
+        for card in self.hand:
+            if card['color'] == 'black' or card['color'] == top_card['color'] or card['value'] == top_card['value']:
+                return True
+        return False
 
     @property
     def cards_number(self):

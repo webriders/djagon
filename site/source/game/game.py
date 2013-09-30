@@ -44,6 +44,9 @@ class Game(object):
         self._previous_lead = self._current_lead
         self._current_lead = x
 
+    def player_is_lead(self, player):
+        return self.current_lead == player.id
+
     def save(self):
         game, created = GameTable.objects.get_or_create(game_id=self.game_id)
         game.prev_state = game.state if self.last_turn_cheated else ""

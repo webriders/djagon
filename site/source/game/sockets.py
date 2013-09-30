@@ -72,3 +72,14 @@ class GameNamespace(BaseNamespace):
             game_mechanics.make_turn(player, card)
         else:
             game_mechanics.send_user_message("error", "You make something wrong!")
+
+
+    def on_draw_card(self):
+        game = GameTable.get_game(self.session.get('game_id'))
+        player = game.players.get(self.session.get('player_id'))
+
+        if not player or not game:
+            return
+
+        mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
+        mechanics.on_draw_card(player)

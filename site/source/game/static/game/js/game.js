@@ -415,7 +415,10 @@ djagon.game.Game.prototype = {
     stackEl: null,
 
     drawDecks: function() {
+        var self = this;
         var pos = this.getDecksPosition();
+
+        console.log("draw DECKS");
 
         if (!this.deckEl)
             this.deckEl = $('<div class="deck">').appendTo(this.container).css({
@@ -423,11 +426,17 @@ djagon.game.Game.prototype = {
                 top: pos.deck.y
             });
 
-        if (!this.stackEl)
+        if (!this.stackEl) {
             this.stackEl = $('<div class="stack">').appendTo(this.container).css({
                 left: pos.stack.x,
                 top: pos.stack.y
             });
+            this.stackEl.on('dblclick', function(){
+                self.takeCard();
+                console.log('take card');
+                console.log(self.stackEl.length)
+            });
+        }
 
         this.deckEl.animate({
             left: pos.deck.x,
@@ -540,5 +549,10 @@ djagon.game.Game.prototype = {
 
     makeTurn: function(card_id) {
          this.socket.emit("make_turn", this.gameId, card_id);
+    },
+
+    takeCard: function() {
+        console.log('emit draw_card');
+        this.socket.emit("draw_card");
     }
 };

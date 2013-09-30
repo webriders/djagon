@@ -73,6 +73,17 @@ class GameMechanics(object):
                 }
                 socket.send_packet(pkt)
 
+    def on_draw_card(self, player):
+        if not self.game.player_is_lead(player):
+            self.send_user_message("error", "It's not your move!")
+            return
+        card = self.game.deck.draw_card()
+        player.draw_card(card)
+        if not player.can_move(self.game.deck.get_top_card()):
+            self.game.lead_to_next_player()
+        self.game.save()
+        self._send_game_running()
+
     def make_turn(self, player, card):
         assert isinstance(player, Player)
         if self.game.current_lead != player.id:
@@ -81,7 +92,6 @@ class GameMechanics(object):
             self.handle_turn(player, card)
 
         self.handle_if_end_of_round()
-        self.handle_if_player_have_cards_to_move()
         self._send_game_running()
 
     def handle_if_end_of_round(self):
@@ -135,24 +145,6 @@ class GameMechanics(object):
             self.game.lead_to_next_player()
 
         self._send_game_running()
-
-    def handle_if_player_have_cards_to_move(self):
-        while True:
-            hand = self.game.players[self.game.current_lead].hand
-            need_card = True
-            for card in hand:
-                if self.turn_is_fair(card):
-                    need_card = False
-
-            if need_card:
-                card = self.game.deck.draw_card()
-                self.game.players[self.game.current_lead].draw_cards([card])
-                if self.turn_is_fair(card):
-                    return
-                self.game.lead_to_next_player()
-            else:
-                return
-
 
     def turn_is_fair(self, card):
         top_card = self.game.deck.get_top_card()
