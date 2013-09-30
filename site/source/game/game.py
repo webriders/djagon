@@ -9,7 +9,7 @@ import uuid
 try:
     from collections import OrderedDict
 except ImportError:
-    from ordereddict import OrderedDict
+    from django.utils.datastructures import SortedDict as OrderedDict
 
 
 class Game(object):
