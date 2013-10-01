@@ -112,7 +112,7 @@ class Game(object):
 
     # delegated
     def perform_turn(self, player, card):
-        if self.is_current_player(player) and player.has_card(card):
+        if self.is_current_player(player) and player.has_card(card) and card.can_put_on(self.put_deck[-1]):
             return self.state.perform_turn(player, card)
 
         if not self.is_current_player(player) and player.has_card(card) and (card == self.put_deck[-1]):

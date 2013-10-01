@@ -24,6 +24,20 @@ class Card(object):
     def can_put_on(self, card):
         return (self.color == card.color) or (self.value == card.value) or (self.color == 'black')
 
+    @classmethod
+    def factory(cls, game, col, val):
+        new_card = Card(col, val)
+        if val == 'reverse':
+            new_card.action = ReverseAction(game, new_card)
+        elif val == 'skip':
+            new_card.action = TakeAndSkipAction(game, new_card, [{"skip": True}])
+        elif val == 'draw-two':
+            new_card.action = TakeAndSkipAction(game, new_card, [{"cards_to_take": 2, "skip": False}])
+        else:
+            new_card.action = DefaultCardAction(game, new_card)
+
+        return new_card
+
 
 class DefaultCardAction(object):
     _game = None
@@ -76,20 +90,11 @@ def generate_cards(game):
     cards = []
     for col in colors:
         for val in values:
-            new_card = Card(col, val)
-            new_card.action = DefaultCardAction(game, new_card)
-            cards.append(new_card)
+            cards.append(Card.factory(game, col, val))
 
     for col in colors:
         for val in special_values:
-            new_card = Card(col, val)
-            if val == 'reverse':
-                new_card.action = ReverseAction(game, new_card)
-            elif val == 'skip':
-                new_card.action = TakeAndSkipAction(game, new_card, [{"skip": True}])
-            elif val == 'draw-two':
-                new_card.action = TakeAndSkipAction(game, new_card, [{"cards_to_take": 2, "skip": False}])
-            cards.append(new_card)
+            cards.append(Card.factory(game, col, val))
 
     #for x in wild_cards:
     #    new_card = Card(x["color"], x["value"])
