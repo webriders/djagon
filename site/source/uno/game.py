@@ -1,5 +1,6 @@
 import random
 from source.uno.card import generate_cards
+from source.uno.exceptions import WrongTurnException
 from source.uno.game_states import StartState
 
 
@@ -113,10 +114,11 @@ class Game(object):
     # delegated
     def perform_turn(self, player, card):
         if self.is_current_player(player) and player.has_card(card) and card.can_put_on(self.put_deck[-1]):
-            return self.state.perform_turn(player, card)
-
-        if not self.is_current_player(player) and player.has_card(card) and (card == self.put_deck[-1]):
+            self.state.perform_turn(player, card)
+        elif not self.is_current_player(player) and player.has_card(card) and (card.is_equal(self.put_deck[-1])):
             self.move_to_player(player)
-            return self.state.perform_turn(player, card)
+            self.state.perform_turn(player, card)
+        else:
+            raise WrongTurnException()
 
 

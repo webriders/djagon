@@ -1,7 +1,7 @@
 import unittest
 from source.uno.card import Card
 from source.uno.game import Game
-from source.uno.game_states import NormalState
+from source.uno.game_states import NormalState, EndState, UnoState
 from source.uno.player import Player
 
 
@@ -76,9 +76,91 @@ class TestGameTurn(unittest.TestCase):
         self.game.perform_turn(self.player1, self.player1.cards[1])
         assert len(self.player1.cards) == 3, "Player have {0} cards, must be 3".format(len(self.player1.cards))
 
-    def tearDown(self):
-        pass
 
+class TestGameFinish(unittest.TestCase):
+    def setUp(self):
+        self.game = Game("TEST_GAME")
+
+        self.player1 = Player("Player1")
+        self.player2 = Player("Player2")
+        self.player3 = Player("Player3")
+
+        self.player1._cards = [
+            Card.factory(self.game, "green", "2"),
+        ]
+        self.player2._cards = [
+            Card.factory(self.game, "green", "2"),
+        ]
+        self.player3._cards = [
+            Card.factory(self.game, "green", "2"),
+        ]
+
+        self.game.add_player(self.player1)
+        self.game.add_player(self.player2)
+        self.game.add_player(self.player3)
+
+        self.game._get_deck = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "3"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.game._put_deck = [
+            Card.factory(self.game, "green", "2")
+        ]
+
+        self.game.state = NormalState(self.game)
+
+    def test_game_finish(self):
+        self.game.current_player = self.player1
+        self.game.perform_turn(self.player1, self.player1.cards[0])
+        assert isinstance(self.game.state, EndState)
+
+
+class TestUnoState(unittest.TestCase):
+    def setUp(self):
+        self.game = Game("TEST_GAME")
+
+        self.player1 = Player("Player1")
+        self.player2 = Player("Player2")
+        self.player3 = Player("Player3")
+
+        self.player1._cards = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "2"),
+        ]
+        self.player2._cards = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "2"),
+        ]
+        self.player3._cards = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "2"),
+        ]
+
+        self.game.add_player(self.player1)
+        self.game.add_player(self.player2)
+        self.game.add_player(self.player3)
+
+        self.game._get_deck = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "3"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.game._put_deck = [
+            Card.factory(self.game, "green", "2")
+        ]
+
+        self.game.state = NormalState(self.game)
+
+    def test_enter_uno_state(self):
+        self.game.current_player = self.player1
+        self.game.perform_turn(self.player1, self.player1.cards[0])
+        assert isinstance(self.game.state, UnoState)
+
+    def test_enter_uno_state(self):
+        self.game.current_player = self.player1
+        self.game.perform_turn(self.player1, self.player1.cards[0])
+        assert isinstance(self.game.state, UnoState)
 
 if __name__ == '__main__':
     unittest.main()

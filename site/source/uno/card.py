@@ -16,27 +16,51 @@ class Card(object):
     def is_identical(self, card):
         return self.id == card.id
 
+    __eq__ = is_identical
+
     def is_equal(self, card):
         return (self.color == card.color) and (self.value == card.value)
 
-    __eq__ = is_identical
-
     def can_put_on(self, card):
-        return (self.color == card.color) or (self.value == card.value) or (self.color == 'black')
+        return \
+            (self.color == card.color) or (self.value == card.value) or \
+            (self.color == 'black') or (hasattr(card, "needed_color") and self.color == card.needed_color)
 
     @classmethod
-    def factory(cls, game, col, val):
-        new_card = Card(col, val)
-        if val == 'reverse':
-            new_card.action = ReverseAction(game, new_card)
-        elif val == 'skip':
-            new_card.action = TakeAndSkipAction(game, new_card, [{"skip": True}])
-        elif val == 'draw-two':
-            new_card.action = TakeAndSkipAction(game, new_card, [{"cards_to_take": 2, "skip": False}])
+    def factory(cls, game, col, val, needed_col=None):
+        if not col == "black":
+            new_card = Card(col, val)
+
+            if val == 'reverse':
+                new_card.action = ReverseAction(game, new_card)
+            elif val == 'skip':
+                new_card.action = TakeAndSkipAction(game, new_card, [{"skip": True}])
+            elif val == 'draw-two':
+                new_card.action = TakeAndSkipAction(game, new_card, [{"cards_to_take": 2, "skip": False}])
+            else:
+                new_card.action = DefaultCardAction(game, new_card)
         else:
-            new_card.action = DefaultCardAction(game, new_card)
+            new_card = BlackCard(col, val, needed_col)
+            if val == 'draw-four':
+                new_card.action = TakeAndSkipAction(game, new_card, [{"cards_to_take": 4, "skip": False}])
+            else:
+                new_card.action = DefaultCardAction(game, new_card)
 
         return new_card
+
+
+class BlackCard(Card):
+    def __init__(self, value=None, action=None, needed_color=None):
+        super(BlackCard, self).__init__('black', value, action)
+        self._needed_color = needed_color
+
+    @property
+    def needed_color(self):
+        return self._needed_color
+
+    @needed_color.setter
+    def needed_color(self, color):
+        self._needed_color = color
 
 
 class DefaultCardAction(object):
@@ -48,7 +72,6 @@ class DefaultCardAction(object):
         self._card = card
 
     def perform(self):
-        self._game.put_deck.append(self._card)
         self._game.move_to_next_player()
 
 
@@ -76,8 +99,8 @@ class TakeAndSkipAction(DefaultCardAction):
 
 class ReverseAction(DefaultCardAction):
     def perform(self):
-        super(ReverseAction, self).perform()
         self._game.reverse()
+        super(ReverseAction, self).perform()
 
 
 def generate_cards(game):
@@ -96,15 +119,15 @@ def generate_cards(game):
         for val in special_values:
             cards.append(Card.factory(game, col, val))
 
-    #for x in wild_cards:
-    #    new_card = Card(x["color"], x["value"])
-    #    new_card.action = None
-    #    cards.append(new_card)
-    #
-    #for x in draw_four_cards:
-    #    new_card = Card(x["color"], x["value"])
-    #    new_card.action = None
-    #    cards.append(new_card)
+    for x in wild_cards:
+        new_card = Card(x["color"], x["value"])
+        new_card.action = None
+        cards.append(new_card)
+
+    for x in draw_four_cards:
+        new_card = Card(x["color"], x["value"])
+        new_card.action = None
+        cards.append(new_card)
 
     return cards
 
