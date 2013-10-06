@@ -1,4 +1,5 @@
 import random
+from source.storage import id_generator
 from source.uno.card import generate_cards
 from source.uno.exceptions import WrongTurnException
 from source.uno.game_states import StartState
@@ -8,8 +9,9 @@ class Game(object):
     CLOCK_WISE = 1
     COUNTER_CLOCK_WISE = -1
 
-    def __init__(self, game_id):
-        self._game_id = game_id
+    def __init__(self, name):
+        self._id = id_generator.new_id()
+        self._name = name
         self._current_player = None
         self._previous_player = None
         self._get_deck = []
@@ -18,6 +20,14 @@ class Game(object):
         self._state = None
         self._direction = self.CLOCK_WISE
         self._deck_reversed_times = 0
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def current_player(self):
@@ -91,6 +101,12 @@ class Game(object):
     def add_player(self, player):
         self._players.append(player)
 
+    def remove_player(self, player):
+        if self.current_player == player:
+            self.current_player = self.get_nth_next_player(1)
+
+        self._players.remove(player)
+
     def start_game(self):
         self.current_player = random.choice(self._players)
         self._put_deck = []
@@ -99,7 +115,12 @@ class Game(object):
 
         # give players cards
         for player in self.players:
-            for x in range(5):
+            if player == self.current_player:
+                num_of_cards = 4
+            else:
+                num_of_cards = 5
+
+            for x in range(num_of_cards):
                 card = self.get_card_from_deck()
                 player.cards.append(card)
 
@@ -109,7 +130,7 @@ class Game(object):
 
         # first card
         card = self.get_card_from_deck()
-        card.action.perform()
+        self.state.perform_turn(self.current_player, card)
 
     # delegated
     def perform_turn(self, player, card):

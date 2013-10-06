@@ -49,7 +49,6 @@ class Game(object):
 
     def save(self):
         game, created = GameTable.objects.get_or_create(game_id=self.game_id)
-        game.prev_state = game.state if self.last_turn_cheated else ""
         game.state = jsonpickle.encode(self)
         game.status = self.status
         game.players_number = self.players_number

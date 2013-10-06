@@ -60,7 +60,9 @@ INSTALLED_APPS = (
     # djagon source
     'common',
     'home',
-    'game',
+    'sockets',
+    'storage',
+    'uno',
 
     # third-party source
     'south',

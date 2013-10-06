@@ -1,3 +1,6 @@
+from source.uno.exceptions import GameFinishedException
+
+
 class GameState(object):
     _game = None
 
@@ -14,6 +17,13 @@ class GameState(object):
 
 class StartState(GameState):
     def perform_turn(self, player, card):
+        self._game.put_deck.append(card)
+        card.action.perform()
+        self.game.state = NormalState(self.game)
+
+
+class NormalState(GameState):
+    def perform_turn(self, player, card):
         player.remove_card(card)
         self._game.put_deck.append(card)
         card.action.perform()
@@ -21,9 +31,6 @@ class StartState(GameState):
             self.game.state = UnoState(self.game)
         if len(player.cards) == 0:
             self.game.state = EndState(self.game)
-
-
-NormalState = StartState
 
 
 class UnoState(NormalState):
@@ -34,4 +41,4 @@ class UnoState(NormalState):
 
 class EndState(GameState):
     def perform_turn(self, player, card):
-        pass
+        raise GameFinishedException()

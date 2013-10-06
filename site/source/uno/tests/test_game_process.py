@@ -1,5 +1,6 @@
 import unittest
 from source.uno.card import Card
+from source.uno.exceptions import WrongTurnException
 from source.uno.game import Game
 from source.uno.game_states import NormalState, EndState, UnoState
 from source.uno.player import Player
@@ -8,21 +9,25 @@ from source.uno.player import Player
 class TestGameStart(unittest.TestCase):
     def setUp(self):
         self.game = Game("TEST_GAME")
-        self.game.add_player(Player("Player1"))
-        self.game.add_player(Player("Player2"))
-        self.game.add_player(Player("Player3"))
+        self.player1 = Player("Player1")
+        self.player2 = Player("Player2")
+        self.player3 = Player("Player3")
+        self.player4 = Player("Player3")
+        self.player5 = Player("Player3")
+        self.game.add_player(self.player1)
+        self.game.add_player(self.player2)
+        self.game.add_player(self.player3)
+        self.game.add_player(self.player4)
+        self.game.add_player(self.player5)
         self.game.start_game()
 
     def test_5_cards_given_to_players(self):
-        for player in self.game.players:
-            if not player == self.game.current_player:
-                assert len(player.cards) == 5, "There {0} cards, must be 5".format(len(player.cards))
+        self.assertEqual(len(self.game.previous_player.cards), 4)
+        self.assertEqual(len(self.game.get_nth_next_player(2).cards), 5)
+        self.assertEqual(len(self.game.get_nth_next_player(3).cards), 5)
 
     def test_one_card_opened(self):
-        assert len(self.game.put_deck) == 1
-
-    def tearDown(self):
-        pass
+        self.assertEqual(len(self.game.put_deck), 1)
 
 
 class TestGameTurn(unittest.TestCase):
@@ -66,15 +71,15 @@ class TestGameTurn(unittest.TestCase):
 
     def test_basic_turn(self):
         self.game.move_to_player(self.player1)
-        assert len(self.game.current_player.cards) == 3
+        self.assertEqual(len(self.game.current_player.cards), 3)
         self.game.perform_turn(self.player1, self.player1.cards[0])
-        assert len(self.player1.cards) == 2, "Player have {0} cards, must be 3".format(len(self.player1.cards))
+        self.assertEqual(len(self.player1.cards), 2, "Player have {0} cards, must be 3".format(len(self.player1.cards)))
 
     def test_wrong_turn(self):
         self.game.move_to_player(self.player1)
-        assert len(self.game.current_player.cards) == 3
-        self.game.perform_turn(self.player1, self.player1.cards[1])
-        assert len(self.player1.cards) == 3, "Player have {0} cards, must be 3".format(len(self.player1.cards))
+        self.assertEqual(len(self.game.current_player.cards), 3)
+
+        self.assertRaises(WrongTurnException, self.game.perform_turn, self.player1, self.player1.cards[1])
 
 
 class TestGameFinish(unittest.TestCase):
@@ -113,7 +118,7 @@ class TestGameFinish(unittest.TestCase):
     def test_game_finish(self):
         self.game.current_player = self.player1
         self.game.perform_turn(self.player1, self.player1.cards[0])
-        assert isinstance(self.game.state, EndState)
+        self.assertIsInstance(self.game.state, EndState)
 
 
 class TestUnoState(unittest.TestCase):
@@ -155,12 +160,13 @@ class TestUnoState(unittest.TestCase):
     def test_enter_uno_state(self):
         self.game.current_player = self.player1
         self.game.perform_turn(self.player1, self.player1.cards[0])
-        assert isinstance(self.game.state, UnoState)
+        self.assertIsInstance(self.game.state, UnoState)
 
     def test_enter_uno_state(self):
         self.game.current_player = self.player1
         self.game.perform_turn(self.player1, self.player1.cards[0])
-        assert isinstance(self.game.state, UnoState)
+        self.assertIsInstance(self.game.state, UnoState)
+
 
 if __name__ == '__main__':
     unittest.main()

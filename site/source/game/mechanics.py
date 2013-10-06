@@ -57,22 +57,6 @@ class GameMechanics(object):
                 pkt["args"] = data
                 socket.send_packet(pkt)
 
-    def _send_game_running(self):
-        for sessid, socket in self.socket.server.sockets.iteritems():
-            if 'game_id' not in socket.session:
-                continue
-            if self.game.game_id == socket.session['game_id']:
-                player_id = socket.session['player_id']
-                data = GameState(player_id, self.game)
-
-                pkt = {
-                    "type": "event",
-                    "name": self.EVENT_GAME_RUNNING,
-                    "args": data,
-                    "endpoint": self.ns_name
-                }
-                socket.send_packet(pkt)
-
     def on_draw_card(self, player):
         if not self.game.player_is_lead(player):
             self.send_user_message("error", "It's not your move!")

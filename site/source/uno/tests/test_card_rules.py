@@ -4,6 +4,7 @@ from source.uno.game import Game
 from source.uno.game_states import NormalState
 from source.uno.player import Player
 
+
 class TestCardsPutOn(unittest.TestCase):
     def test_basic_cards_rule(self):
         card1 = Card.factory(None, "green", "9")
@@ -14,54 +15,54 @@ class TestCardsPutOn(unittest.TestCase):
         card6 = Card.factory(None, "black", "wild", "red")
         card7 = Card.factory(None, "black", "draw-four", "blue")
 
-        assert card1.can_put_on(card2)
-        assert not card1.can_put_on(card3)
-        assert not card1.can_put_on(card4)
-        assert not card1.can_put_on(card5)
-        assert not card1.can_put_on(card6)
-        assert not card1.can_put_on(card7)
+        self.assertTrue(card1.can_put_on(card2))
+        self.assertFalse(card1.can_put_on(card3))
+        self.assertFalse(card1.can_put_on(card4))
+        self.assertFalse(card1.can_put_on(card5))
+        self.assertFalse(card1.can_put_on(card6))
+        self.assertFalse(card1.can_put_on(card7))
 
-        assert card2.can_put_on(card1)
-        assert not card2.can_put_on(card3)
-        assert not card2.can_put_on(card4)
-        assert card2.can_put_on(card5)
-        assert card2.can_put_on(card6)
-        assert not card2.can_put_on(card7)
+        self.assertTrue(card2.can_put_on(card1))
+        self.assertFalse(card2.can_put_on(card3))
+        self.assertFalse(card2.can_put_on(card4))
+        self.assertTrue(card2.can_put_on(card5))
+        self.assertTrue(card2.can_put_on(card6))
+        self.assertFalse(card2.can_put_on(card7))
 
-        assert not card3.can_put_on(card1)
-        assert not card3.can_put_on(card2)
-        assert card3.can_put_on(card4)
-        assert not card3.can_put_on(card5)
-        assert not card3.can_put_on(card6)
-        assert card3.can_put_on(card7)
+        self.assertFalse(card3.can_put_on(card1))
+        self.assertFalse(card3.can_put_on(card2))
+        self.assertTrue(card3.can_put_on(card4))
+        self.assertFalse(card3.can_put_on(card5))
+        self.assertFalse(card3.can_put_on(card6))
+        self.assertTrue(card3.can_put_on(card7))
 
-        assert not card4.can_put_on(card1)
-        assert not card4.can_put_on(card2)
-        assert card4.can_put_on(card3)
-        assert not card4.can_put_on(card5)
-        assert not card4.can_put_on(card6)
-        assert card4.can_put_on(card7)
+        self.assertFalse(card4.can_put_on(card1))
+        self.assertFalse(card4.can_put_on(card2))
+        self.assertTrue(card4.can_put_on(card3))
+        self.assertFalse(card4.can_put_on(card5))
+        self.assertFalse(card4.can_put_on(card6))
+        self.assertTrue(card4.can_put_on(card7))
 
-        assert not card5.can_put_on(card1)
-        assert card5.can_put_on(card2)
-        assert not card5.can_put_on(card3)
-        assert not card5.can_put_on(card4)
-        assert card5.can_put_on(card6)
-        assert not card5.can_put_on(card7)
+        self.assertFalse(card5.can_put_on(card1))
+        self.assertTrue(card5.can_put_on(card2))
+        self.assertFalse(card5.can_put_on(card3))
+        self.assertFalse(card5.can_put_on(card4))
+        self.assertTrue(card5.can_put_on(card6))
+        self.assertFalse(card5.can_put_on(card7))
 
-        assert card6.can_put_on(card1)
-        assert card6.can_put_on(card2)
-        assert card6.can_put_on(card3)
-        assert card6.can_put_on(card4)
-        assert card6.can_put_on(card5)
-        assert card6.can_put_on(card7)
+        self.assertTrue(card6.can_put_on(card1))
+        self.assertTrue(card6.can_put_on(card2))
+        self.assertTrue(card6.can_put_on(card3))
+        self.assertTrue(card6.can_put_on(card4))
+        self.assertTrue(card6.can_put_on(card5))
+        self.assertTrue(card6.can_put_on(card7))
 
-        assert card7.can_put_on(card1)
-        assert card7.can_put_on(card2)
-        assert card7.can_put_on(card3)
-        assert card7.can_put_on(card4)
-        assert card7.can_put_on(card5)
-        assert card7.can_put_on(card6)
+        self.assertTrue(card7.can_put_on(card1))
+        self.assertTrue(card7.can_put_on(card2))
+        self.assertTrue(card7.can_put_on(card3))
+        self.assertTrue(card7.can_put_on(card4))
+        self.assertTrue(card7.can_put_on(card5))
+        self.assertTrue(card7.can_put_on(card6))
 
 
 class TestTurnIn(unittest.TestCase):
@@ -106,14 +107,14 @@ class TestTurnIn(unittest.TestCase):
     def test_correct_turn_in(self):
         self.game.move_to_player(self.player1)
         self.game.perform_turn(self.player2, self.player2.cards[0])
-        assert len(self.player2.cards) == 2
-        assert self.game.current_player == self.player3
+        self.assertEqual(len(self.player2.cards), 2)
+        self.assertEqual(self.game.current_player, self.player3)
 
     def test_incorrect_turn_in(self):
         self.game.move_to_player(self.player1)
         self.game.perform_turn(self.player2, self.player2.cards[0])
-        assert len(self.player2.cards) == 2
-        assert self.game.current_player == self.player3
+        self.assertEqual(len(self.player2.cards), 2)
+        self.assertEqual(self.game.current_player, self.player3)
 
 
 class TestReverse(unittest.TestCase):
@@ -158,10 +159,10 @@ class TestReverse(unittest.TestCase):
     def test_reverse_card(self):
         self.game.current_player = self.player1
         self.game.perform_turn(self.player1, self.player1.cards[0])
-        assert len(self.game.put_deck) == 2
-        assert self.game.current_player == self.player3
+        self.assertEqual(len(self.game.put_deck), 2)
+        self.assertEqual(self.game.current_player, self.player3)
         self.game.perform_turn(self.player3, self.player3.cards[-1])
-        assert self.game.current_player == self.player1
+        self.assertEqual(self.game.current_player, self.player1)
 
 
 class TestBlackCards(unittest.TestCase):
