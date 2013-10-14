@@ -1,31 +1,40 @@
+from socketio.mixins import RoomsMixin
 from socketio.namespace import BaseNamespace
 from socketio.sdjango import namespace
-from source.game.cards import get_card_by_id
-from source.game.mechanics import GameMechanics
+from source.sockets.player import SocketPlayer
 from source.storage.exceptions import GameDoesNotExist, PlayerDoesNotExist
 from source.storage.models import StoredGame
 from source.storage import utils
 from source.uno.exceptions import WrongTurnException
 
 
+class UnoRoomsMixin(RoomsMixin):
+    def emit_to_room(self, room, event, *args):
+        """This is sent to all in the room (in this particular Namespace)"""
+        pkt = dict(type="event",
+                   name=event,
+                   args=args,
+                   endpoint=self.ns_name)
+        room_name = self._get_room_name(room)
+        for sessid, socket in self.socket.server.sockets.iteritems():
+            if 'rooms' not in socket.session:
+                continue
+            if room_name in socket.session['rooms']:
+                socket.send_packet(pkt)
+
+
 @namespace('/game')
-class GameNamespace(BaseNamespace):
+class GameNamespace(BaseNamespace, UnoRoomsMixin):
     def recv_disconnect(self):
-        if hasattr(self.session, 'game_id'):
-            try:
-                game, state = utils.fetch_game(self.session['game_id'])
-                game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-                game_mechanics.on_leave_game()
-            except GameDoesNotExist:
-                pass
         self.disconnect(silent=True)
 
     def on_join_game(self, game_id, sessid):
         try:
             game, state = utils.fetch_game(game_id)
+            if not "player" in self.session:
+                sock_player = SocketPlayer(sessid, game)
+                self.session["player"] = sock_player
 
-            game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-            game_mechanics.on_join_game(sessid)
         except GameDoesNotExist:
             pass
 

@@ -1,6 +1,6 @@
-from source.game.deck import UnoDeck
-from source.game.player import Player
-from source.game.models import GameTable
+from source.___old_game.deck import UnoDeck
+from source.___old_game.player import Player
+from source.___old_game.models import GameTable
 
 import jsonpickle
 import random

@@ -10,8 +10,8 @@ class TestGameSave(unittest.TestCase):
     def test_empty_idle_game_save(self):
         game = utils.create_new_game("TEST_GAME")
         utils.save_game(game, StoredGame.STATE_IDLE)
-        restored_game, restored_state = utils.fetch_game(game.id)
-        self.assertEqual(game.id, restored_game.id)
+        restored_game, restored_state = utils.fetch_game(game.game_id)
+        self.assertEqual(game.game_id, restored_game.game_id)
         self.assertEqual(StoredGame.STATE_IDLE, restored_state)
 
     def test_filled_idle_game_save(self):
@@ -39,8 +39,8 @@ class TestGameSave(unittest.TestCase):
         game.add_player(player3)
 
         utils.save_game(game, StoredGame.STATE_IDLE)
-        restored_game, restored_state = utils.fetch_game(game.id)
-        self.assertEqual(game.id, restored_game.id)
+        restored_game, restored_state = utils.fetch_game(game.game_id)
+        self.assertEqual(game.game_id, restored_game.game_id)
         self.assertEqual(StoredGame.STATE_IDLE, restored_state)
         self.assertEqual(len(game.players), len(restored_game.players))
         self.assertEqual(len(game.players[0].cards), len(restored_game.players[0].cards))

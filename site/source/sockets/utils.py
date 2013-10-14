@@ -1,10 +1,15 @@
 from source.uno.game import Game
 
+EVENT_INITIAL_STATE = 'initial_state'
+EVENT_GAME_RUNNING = 'game_running'
+EVENT_USER_MESSAGE = 'user_message'
+NS_NAME = '/game'
+
 
 def game_state(game, player_id):
     data = {
         'player_id': player_id,
-        'lead_player_id': game.current_player.id,
+        'lead_player_id': game.current_player.player_id,
         'players_list': [p.player_id for p in game.players],
     }
 
@@ -37,12 +42,12 @@ def game_state_frontend(game):
             continue
         if game.game_id == socket.session['game_id']:
             player_id = socket.session['player_id']
-            data = GameState(player_id, game)
+            data = game_state(game, player_id)
 
             pkt = {
                 "type": "event",
-                "name": self.EVENT_GAME_RUNNING,
+                "name": EVENT_GAME_RUNNING,
                 "args": data,
-                "endpoint": self.ns_name
+                "endpoint": NS_NAME
             }
             socket.send_packet(pkt)

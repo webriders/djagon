@@ -1,7 +1,7 @@
 import uuid
 from django.utils.http import urlquote
 
-from source.game.cards import get_cards_score
+from source.___old_game.cards import get_cards_score
 
 
 class Player(object):

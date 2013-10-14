@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     'sockets',
     'storage',
     'uno',
+    'ws_uno',
 
     # third-party source
     'south',

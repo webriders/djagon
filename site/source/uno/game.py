@@ -3,14 +3,16 @@ from source.storage import id_generator
 from source.uno.card import generate_cards
 from source.uno.exceptions import WrongTurnException
 from source.uno.game_states import StartState
+from source.uno.player import Player
 
 
 class Game(object):
+    PLAYERS_LIMIT = 8
     CLOCK_WISE = 1
     COUNTER_CLOCK_WISE = -1
 
     def __init__(self, name):
-        self._id = id_generator.new_id()
+        self._game_id = id_generator.new_id()
         self._name = name
         self._current_player = None
         self._previous_player = None
@@ -22,8 +24,8 @@ class Game(object):
         self._deck_reversed_times = 0
 
     @property
-    def id(self):
-        return self._id
+    def game_id(self):
+        return self._game_id
 
     @property
     def name(self):
@@ -99,9 +101,13 @@ class Game(object):
             self._direction = self.CLOCK_WISE
 
     def add_player(self, player):
+        assert isinstance(player, Player)
+
         self._players.append(player)
 
     def remove_player(self, player):
+        assert isinstance(player, Player)
+
         if self.current_player == player:
             self.current_player = self.get_nth_next_player(1)
 
@@ -141,5 +147,3 @@ class Game(object):
             self.state.perform_turn(player, card)
         else:
             raise WrongTurnException()
-
-

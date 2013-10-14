@@ -3,17 +3,19 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.views.generic.base import RedirectView, TemplateView
-from source.game.models import GameTable
-from source.game.game import Game
+from source.storage.exceptions import GameDoesNotExist, NoOpenedGames
+from source.storage.models import StoredGame
+from source.storage import utils
+from source.uno.game import Game
 
 
 class CreateGameView(RedirectView):
     permanent = False
 
     def get_redirect_url(self, **kwargs):
-        game = Game()
-        game.save()
+        game = utils.create_new_game("new_game")
         return reverse('djagon:game-play', args=(game.game_id,))
+
 
 create_game = CreateGameView.as_view()
 
@@ -30,23 +32,27 @@ class PlayGameView(TemplateView):
     def get(self, request, *args, **kwargs):
         game_id = self.kwargs.get('game_id')
         sessid = request.COOKIES.get('sessid')
+
         try:
-            game = GameTable.objects.get(game_id=game_id)
-        except GameTable.DoesNotExist:
+            game, game_state = utils.fetch_game(game_id=game_id)
+        except GameDoesNotExist:
             messages.warning(request, "There is no such game. Create yours!")
             return HttpResponseRedirect(reverse('djagon:home'))
-        if game.players_number >= Game.PLAYERS_LIMIT:
+
+        if len(game.players) == Game.PLAYERS_LIMIT:
             messages.warning(request, "Players number is limited in this game. Please, create yours!")
             return HttpResponseRedirect(reverse('djagon:home'))
-        if game.status == game.STATUS_ACTIVE:
+
+        if game_state == StoredGame.STATE_ACTIVE:
             if not sessid or not game.resolve().user_is_member(sessid):
                 messages.warning(request, "This game has already been started")
                 return HttpResponseRedirect(reverse('djagon:home'))
-        elif not game.status in [game.STATUS_OPEN, game.STATUS_IDLE]:
+        elif not game_state in [StoredGame.STATE_OPEN, StoredGame.STATE_IDLE]:
             messages.warning(request, "This game has already been started")
             return HttpResponseRedirect(reverse('djagon:home'))
 
         return super(PlayGameView, self).get(self, request, *args, **kwargs)
+
 
 play_game = PlayGameView.as_view()
 
@@ -56,10 +62,11 @@ class JoinRandomGameView(RedirectView):
 
     def get_redirect_url(self, **kwargs):
         try:
-            game = GameTable.objects.filter(status=GameTable.STATUS_OPEN, players_number__lt=Game.PLAYERS_LIMIT).order_by('?')[0]
+            game = utils.fetch_any_game()
             return reverse('djagon:game-play', args=(game.game_id,))
-        except IndexError:
+        except NoOpenedGames:
             messages.warning(self.request, "There are no open games. Create yours!")
             return reverse('djagon:home')
+
 
 join_random = JoinRandomGameView.as_view()

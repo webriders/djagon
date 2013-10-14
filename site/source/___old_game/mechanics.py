@@ -1,22 +1,9 @@
-from source.game.packets import GameState, InitialGameState
-from source.game.player import Player
-from source.game.game import Game
+from source.___old_game.packets import GameState, InitialGameState
+from source.___old_game.player import Player
+from source.___old_game.game import Game
 
 
 class GameMechanics(object):
-
-    SPECIFIC_CARD_HANDLERS = {
-        #'7': 'handle_seven',
-        'skip': 'handle_skip',
-        'reverse': 'handle_reverse',
-        'draw-two': 'handle_draw_two',
-        'draw-four': 'handle_draw_four',
-        'wild': 'handle_wild',
-
-        'claim_unfair': 'handle_claim_unfair',
-        'throw_in': 'handle_throw_in',
-        'uno': 'handle_uno',
-    }
 
     EVENT_INITIAL_STATE = 'initial_state'
     EVENT_GAME_RUNNING = 'game_running'

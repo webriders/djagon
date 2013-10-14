@@ -4,14 +4,14 @@ from source.storage import id_generator
 class Player(object):
 
     def __init__(self, name):
-        self._id = id_generator.new_id()
+        self._player_id = id_generator.new_id()
         self._name = name
         self._cards = []
         self._lamp = False
 
     @property
-    def id(self):
-        return self._id
+    def player_id(self):
+        return self._player_id
 
     def eq(self, other):
         return self.name == other.name
