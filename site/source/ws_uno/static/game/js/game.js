@@ -8,7 +8,7 @@ djagon.game = djagon.game || {};
  * @param cfg Config
  * @constructor
  */
-djagon.game.Game = function(cfg) {
+djagon.game.Game = function (cfg) {
     cfg && this.init(cfg);
 };
 
@@ -37,47 +37,47 @@ djagon.game.Game.prototype = {
     cardWidth: 141,
     cardHeight: 220,
 
-    init: function(cfg) {
+    init: function (cfg) {
         $.extend(true, this, cfg);
         this.initSocket();
         this.initResize();
     },
 
-    initSocket: function() {
+    initSocket: function () {
         var self = this;
         var socket = this.socket = io.connect(this.url);
 
-        socket.on('connect', function() {
+        socket.on('connect', function () {
             socket.emit('join_game', self.gameId, self.getSessionId());
         });
 
-        socket.on('initial_state', function(state) {
+        socket.on('initial_state', function (state) {
             console.log('initial_state', 'received');
             self.gameState = 'before';
             self.currentState = state;
             self.draw(state);
         });
 
-        socket.on('game_running', function(state) {
+        socket.on('game_running', function (state) {
             console.log('game_running', 'received');
             self.gameState = 'playing';
             self.currentState = state;
             self.draw(state);
         });
 
-        socket.on('user_message', function(o) {
+        socket.on('user_message', function (o) {
             djagon.messages[o.type](o.msg);
         });
     },
 
-    getSessionId: function() {
+    getSessionId: function () {
         if (!($.cookie('sessid'))) {
-            $.cookie('sessid', this.gameId + '-' + Math.floor(Math.random() * 100000 ));
+            $.cookie('sessid', this.gameId + '-' + Math.floor(Math.random() * 100000));
         }
         return $.cookie('sessid');
     },
 
-    draw: function(state) {
+    draw: function (state) {
         var playersData = this.generatePlayersData(state.players_list);
         var cardsData = this.generateCardsData(playersData);
         var yourCardsData = cardsData.your;
@@ -90,9 +90,9 @@ djagon.game.Game.prototype = {
         this.drawLeadPlayer(playersData);
     },
 
-    drawPlayers: function(playersData) {
+    drawPlayers: function (playersData) {
         var players = d3.select(this.container[0]).selectAll('.player-info')
-            .data(playersData, function(d) {
+            .data(playersData, function (d) {
                 return d.id;
             });
 
@@ -101,7 +101,7 @@ djagon.game.Game.prototype = {
         this.updateCurrentPlayers(d3.select(this.container[0]).selectAll('.player-info'));
     },
 
-    createNewPlayers: function(players) {
+    createNewPlayers: function (players) {
         console.log('createNewPlayers', players[0].length);
 
         var self = this;
@@ -112,10 +112,10 @@ djagon.game.Game.prototype = {
         // avatar
         el.append('img')
             .classed('avatar', true)
-            .style('background-color', function(d) {
+            .style('background-color', function (d) {
                 return d.color;
             })
-            .attr('src', function(d) {
+            .attr('src', function (d) {
                 return d.avatar;
             });
 
@@ -123,18 +123,18 @@ djagon.game.Game.prototype = {
         el.append('div')
             .classed('player-name', true)
             .append('span')
-            .text(function(d) {
+            .text(function (d) {
                 return d.name;
             });
 
         // "I'm ready" button
-        el.filter(function(d) {
+        el.filter(function (d) {
             return d.you == true;
         })
             .append('button')
             .classed('ready-button', true)
             .text('I am ready!')
-            .on('click', function() {
+            .on('click', function () {
                 self.sendReadyState();
 
             });
@@ -144,23 +144,23 @@ djagon.game.Game.prototype = {
             .classed('ready-mark', true);
     },
 
-    removeOldPlayers: function(players) {
+    removeOldPlayers: function (players) {
         console.log('removeOldPlayers', players[0].length);
 
-        players.each(function() {
-            $(this).fadeOut().promise().done(function() {
+        players.each(function () {
+            $(this).fadeOut().promise().done(function () {
                 $(this).remove();
             });
         });
     },
 
-    updateCurrentPlayers: function(players) {
+    updateCurrentPlayers: function (players) {
         console.log('updateCurrentPlayers', players[0].length);
 
         var self = this;
 
         players
-            .each(function(d) {
+            .each(function (d) {
                 var readyButton = $(this).find('.ready-button'),
                     readyMark = $(this).find('.ready-mark');
 
@@ -168,20 +168,20 @@ djagon.game.Game.prototype = {
                 readyMark[self.gameState == 'before' && d.lamp == true ? 'addClass' : 'removeClass']('active');
             })
             .transition()
-            .style('left', function(d) {
+            .style('left', function (d) {
                 return d.x + 'px';
             })
-            .style('top', function(d) {
+            .style('top', function (d) {
                 return d.y + 'px';
             })
     },
 
-    generatePlayersData: function(playersRawData) {
+    generatePlayersData: function (playersRawData) {
         var container = this.container,
             playersAmount = playersRawData.length;
 
         var yourPlayerIndex;
-        $.each(playersRawData, function(index, player) {
+        $.each(playersRawData, function (index, player) {
             if (player.you)
                 yourPlayerIndex = index;
         });
@@ -191,7 +191,7 @@ djagon.game.Game.prototype = {
 
         var newData = [];
 
-        $.each(playersRawData, function(i, o) {
+        $.each(playersRawData, function (i, o) {
             var data = $.extend(true, {}, o);
 
             // set position
@@ -226,7 +226,7 @@ djagon.game.Game.prototype = {
         return newData;
     },
 
-    generateCardsData: function(playersData) {
+    generateCardsData: function (playersData) {
         var container = this.container,
             cardWidth = this.cardWidth,
             cardHeight = this.cardHeight;
@@ -234,10 +234,10 @@ djagon.game.Game.prototype = {
         var yourCardsData = [],
             otherCardsData = [];
 
-        $.each(playersData, function(index, player) {
+        $.each(playersData, function (index, player) {
             var cardsAmount = player.cards.length;
 
-            $.each(player.cards, function(i, card) {
+            $.each(player.cards, function (i, card) {
                 var data;
 
                 if (player.you) {
@@ -273,9 +273,9 @@ djagon.game.Game.prototype = {
         };
     },
 
-    drawYourCards: function(cardsData) {
+    drawYourCards: function (cardsData) {
         var cards = d3.select(this.container[0]).selectAll('.card.your')
-            .data(cardsData, function(d) {
+            .data(cardsData, function (d) {
                 return d.id;
             });
 
@@ -284,7 +284,7 @@ djagon.game.Game.prototype = {
         this.updateYourCurrentCards(d3.select(this.container[0]).selectAll('.card.your'));
     },
 
-    createYourNewCards: function(cards) {
+    createYourNewCards: function (cards) {
         console.log('createYourNewCards', cards[0].length);
 
         var self = this;
@@ -292,13 +292,13 @@ djagon.game.Game.prototype = {
 
         cards.append('div')
             .classed('card your', true)
-            .on("dblclick", function(d) {
+            .on("dblclick", function (d) {
                 self.makeTurn(d.id);
             })
             .style('left', initPos.stack.x + 'px')
             .style('top', initPos.stack.y + 'px')
             .append('img')
-            .attr('src', function(d) {
+            .attr('src', function (d) {
                 var color = d.color,
                     cardsURL = self.cardsURL;
 
@@ -309,7 +309,7 @@ djagon.game.Game.prototype = {
                 else
                     return cardsURL + 'card-' + d.value + '.png';
             })
-            .style('background-color', function(d) {
+            .style('background-color', function (d) {
                 return {
                     black: '#000',
                     red: '#ed1c24',
@@ -320,24 +320,24 @@ djagon.game.Game.prototype = {
             });
     },
 
-    removeYourOldCards: function(cards) {
+    removeYourOldCards: function (cards) {
         console.log('removeYourOldCards', cards[0].length);
 
         var initPos = this.getDecksPosition();
 
-        cards.each(function() {
+        cards.each(function () {
             $(this).animate({
                 left: initPos.deck.x,
                 top: initPos.deck.y
-            }).promise().done(function() {
-                $(this).fadeOut().promise().done(function() {
-                    $(this).remove();
+            }).promise().done(function () {
+                    $(this).fadeOut().promise().done(function () {
+                        $(this).remove();
+                    });
                 });
-            });
         });
     },
 
-    updateYourCurrentCards: function(cards) {
+    updateYourCurrentCards: function (cards) {
         console.log('updateYourCurrentCards', cards[0].length);
 
         var maxWidth = this.container.width(),
@@ -349,17 +349,17 @@ djagon.game.Game.prototype = {
             .style('top', maxHeight / 2 - cardHeight / 2);
 
         cards.transition()
-            .style('left', function(d) {
+            .style('left', function (d) {
                 return d.x + 'px';
             })
-            .style('top', function(d) {
+            .style('top', function (d) {
                 return d.y + 'px';
             })
     },
 
-    drawOtherCards: function(cardsData) {
+    drawOtherCards: function (cardsData) {
         var cards = d3.select(this.container[0]).selectAll('.card.other')
-            .data(cardsData, function(d) {
+            .data(cardsData, function (d) {
                 return d.id;
             });
 
@@ -368,7 +368,7 @@ djagon.game.Game.prototype = {
         this.updateOtherCurrentCards(d3.select(this.container[0]).selectAll('.card.other'));
     },
 
-    createOtherNewCards: function(cards) {
+    createOtherNewCards: function (cards) {
         console.log('createOtherNewCards', cards[0].length);
 
         var cardBackSide = this.cardsURL + 'card-back-side.png';
@@ -382,31 +382,31 @@ djagon.game.Game.prototype = {
             .attr('src', cardBackSide);
     },
 
-    removeOtherOldCards: function(cards) {
+    removeOtherOldCards: function (cards) {
         console.log('removeOtherOldCards', cards[0].length);
 
         var initPos = this.getDecksPosition();
 
-        cards.each(function() {
+        cards.each(function () {
             $(this).animate({
                 left: initPos.deck.x,
                 top: initPos.deck.y
-            }).promise().done(function() {
-                $(this).fadeOut().promise().done(function() {
-                    $(this).remove();
+            }).promise().done(function () {
+                    $(this).fadeOut().promise().done(function () {
+                        $(this).remove();
+                    });
                 });
-            });
         });
     },
 
-    updateOtherCurrentCards: function(cards) {
+    updateOtherCurrentCards: function (cards) {
         console.log('updateOtherCurrentCards', cards[0].length);
 
         cards.transition()
-            .style('left', function(d) {
+            .style('left', function (d) {
                 return d.x + 'px';
             })
-            .style('top', function(d) {
+            .style('top', function (d) {
                 return d.y + 'px';
             });
     },
@@ -414,7 +414,7 @@ djagon.game.Game.prototype = {
     deckEl: null,
     stackEl: null,
 
-    drawDecks: function() {
+    drawDecks: function () {
         var self = this;
         var pos = this.getDecksPosition();
 
@@ -431,7 +431,7 @@ djagon.game.Game.prototype = {
                 left: pos.stack.x,
                 top: pos.stack.y
             });
-            this.stackEl.on('dblclick', function(){
+            this.stackEl.on('dblclick', function () {
                 self.takeCard();
                 console.log('take card');
                 console.log(self.stackEl.length)
@@ -481,7 +481,7 @@ djagon.game.Game.prototype = {
                     }[cardData.color]
                 });
         } else {
-            this.deckEl.find('.card').fadeOut().promise().done(function() {
+            this.deckEl.find('.card').fadeOut().promise().done(function () {
                 this.remove();
             });
         }
@@ -489,12 +489,12 @@ djagon.game.Game.prototype = {
 
     leadPlayerMark: null,
 
-    drawLeadPlayer: function(playersData) {
+    drawLeadPlayer: function (playersData) {
         if (!this.leadPlayerMark)
             this.leadPlayerMark = $('<div class="lead-player-mark">').appendTo(this.container);
 
         var activePlayerId = this.currentState.lead_player_id, leadPlayer;
-        $.each(playersData, function(i, player) {
+        $.each(playersData, function (i, player) {
             if (player.id == activePlayerId)
                 leadPlayer = player;
         });
@@ -510,7 +510,7 @@ djagon.game.Game.prototype = {
         }
     },
 
-    getDecksPosition: function() {
+    getDecksPosition: function () {
         var halfWidth = this.container.width() / 2,
             halfHeight = this.container.height() / 2,
             cardWidth = this.cardWidth,
@@ -529,16 +529,16 @@ djagon.game.Game.prototype = {
         }
     },
 
-    initResize: function() {
+    initResize: function () {
         var self = this;
 
-        $(window).on('resize', function() {
+        $(window).on('resize', function () {
             if (self.currentState)
                 self.draw(self.currentState);
         });
     },
 
-    sendReadyState: function() {
+    sendReadyState: function () {
         if (this.gameState != 'before') {
             alert("You can't do this now, sorry...");
         } else {
@@ -547,11 +547,11 @@ djagon.game.Game.prototype = {
         }
     },
 
-    makeTurn: function(card_id) {
-         this.socket.emit("make_turn", this.gameId, card_id);
+    makeTurn: function (card_id) {
+        this.socket.emit("make_turn", this.gameId, card_id);
     },
 
-    takeCard: function() {
+    takeCard: function () {
         console.log('emit draw_card');
         this.socket.emit("draw_card");
     }

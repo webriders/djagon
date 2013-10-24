@@ -8,4 +8,5 @@ class HomePageView(TemplateView):
         data = super(HomePageView, self).get_context_data(**kwargs)
         return data
 
+
 home_page = HomePageView.as_view()

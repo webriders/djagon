@@ -2,149 +2,149 @@
 @import "helpers/animation";
 
 @mixin simple-card-animation($name) {
-    animation-name: $name;
-    -webkit-animation-name: $name;
+  animation-name: $name;
+  -webkit-animation-name: $name;
 
-    animation-duration: 1s;
-    -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
 
-    animation-fill-mode: forwards;
-    -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
 }
 
 .page-container {
-    .intro {
-        position: absolute;
-        right: 40px;
-        top: 40px;
-        width: 240px;
+  .intro {
+    position: absolute;
+    right: 40px;
+    top: 40px;
+    width: 240px;
 
-        > .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        p {
-            margin-bottom: 10px;
-        }
+    > .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 12px;
     }
 
-    .cards {
-        position: absolute;
-        left: 50%;
-        top: 50%;
+    p {
+      margin-bottom: 10px;
+    }
+  }
 
-        .one, .two, .three {
-            position: absolute;
-            width: 183px;
-            height: 286px;
-            border-radius: 19px;
-            border: 1px solid rgba(0, 0, 0, .3);
-            box-shadow: 4px 4px 10px rgba(0, 0, 0, .3);
-        }
+  .cards {
+    position: absolute;
+    left: 50%;
+    top: 50%;
 
-        .one {
-            left: -260px;
-            top: -136px;
-            @include transform(rotate(-15deg));
-            @include simple-card-animation(rotate-first);
-            background: url(../img/draw_two.png) no-repeat center #fff;
-        }
-
-        .two {
-            left: 77px;
-            top: -136px;
-            @include transform(rotate(15deg));
-            @include simple-card-animation(rotate-last);
-            background: url(../img/7.png) no-repeat center #fff;
-        }
-
-        .three {
-            left: -91px;
-            top: -160px;
-            background: url(../img/card_back.png) no-repeat center #fff;
-        }
+    .one, .two, .three {
+      position: absolute;
+      width: 183px;
+      height: 286px;
+      border-radius: 19px;
+      border: 1px solid rgba(0, 0, 0, .3);
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, .3);
     }
 
-    .actions {
-        position: absolute;
-        left: 50%;
-        top: 140px;
-
-        .create-game, .join-game {
-            display: block;
-            width: 200px;
-            height: 60px;
-            text-align: center;
-            border: 5px solid #fff;
-            border-radius: 12px;
-            font: bold 16px/29px Arial, Liberation Sans, sans-serif;
-            padding: 10px 0 11px;
-            position: absolute;
-            top: 0;
-            color: #fff;
-            cursor: pointer;
-            text-shadow: 1px 2px 0 rgba(0, 0, 0, .6);
-            box-shadow: 4px 4px 10px rgba(0, 0, 0, .3);
-            outline: none;
-            text-decoration: none;
-            @include transition(all .25s);
-            @include box-sizing(border-box);
-
-            &::-moz-focus-inner {
-                border: 0;
-            }
-        }
-
-        .create-game {
-            left: -220px;
-            $color: #df0012;
-            background-color: $color;
-
-            &:hover {
-                background-color: lighten($color, 10);
-            }
-
-            &:active {
-                background-color: darken($color, 10);
-            }
-        }
-
-        .join-game {
-            left: 20px;
-            $color: #0188cc;
-            background-color: $color;
-
-            &:hover {
-                background-color: lighten($color, 10);
-            }
-
-            &:active {
-                background-color: darken($color, 10);
-            }
-        }
+    .one {
+      left: -260px;
+      top: -136px;
+      @include transform(rotate(-15deg));
+      @include simple-card-animation(rotate-first);
+      background: url(../img/draw_two.png) no-repeat center #fff;
     }
+
+    .two {
+      left: 77px;
+      top: -136px;
+      @include transform(rotate(15deg));
+      @include simple-card-animation(rotate-last);
+      background: url(../img/7.png) no-repeat center #fff;
+    }
+
+    .three {
+      left: -91px;
+      top: -160px;
+      background: url(../img/card_back.png) no-repeat center #fff;
+    }
+  }
+
+  .actions {
+    position: absolute;
+    left: 50%;
+    top: 140px;
+
+    .create-game, .join-game {
+      display: block;
+      width: 200px;
+      height: 60px;
+      text-align: center;
+      border: 5px solid #fff;
+      border-radius: 12px;
+      font: bold 16px/29px Arial, Liberation Sans, sans-serif;
+      padding: 10px 0 11px;
+      position: absolute;
+      top: 0;
+      color: #fff;
+      cursor: pointer;
+      text-shadow: 1px 2px 0 rgba(0, 0, 0, .6);
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, .3);
+      outline: none;
+      text-decoration: none;
+      @include transition(all .25s);
+      @include box-sizing(border-box);
+
+      &::-moz-focus-inner {
+        border: 0;
+      }
+    }
+
+    .create-game {
+      left: -220px;
+      $color: #df0012;
+      background-color: $color;
+
+      &:hover {
+        background-color: lighten($color, 10);
+      }
+
+      &:active {
+        background-color: darken($color, 10);
+      }
+    }
+
+    .join-game {
+      left: 20px;
+      $color: #0188cc;
+      background-color: $color;
+
+      &:hover {
+        background-color: lighten($color, 10);
+      }
+
+      &:active {
+        background-color: darken($color, 10);
+      }
+    }
+  }
 }
 
 @include keyframes(rotate-first) {
-    from {
-        @include transform(rotate(0));
-        left: -91px;
-    }
-    to {
-        @include transform(rotate(-15deg));
-        left: -260px;
-    }
+  from {
+    @include transform(rotate(0));
+    left: -91px;
+  }
+  to {
+    @include transform(rotate(-15deg));
+    left: -260px;
+  }
 }
 
 @include keyframes(rotate-last) {
-    from {
-        @include transform(rotate(0));
-        left: -91px;
-    }
-    to {
-        @include transform(rotate(15deg));
-        left: 77px;
-    }
+  from {
+    @include transform(rotate(0));
+    left: -91px;
+  }
+  to {
+    @include transform(rotate(15deg));
+    left: 77px;
+  }
 }

@@ -4,46 +4,52 @@
 {% load compress %}
 
 {% block static %}
-    {{ block.super }}
+{{ block.super }}
 
-    {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'home/css/home_page.scss' %}"/>
-    {% endcompress %}
+{% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'home/css/home_page.scss' %}"/>
+{% endcompress %}
 
-    {% compress js %}
-        <script type="text/javascript">
-            $.noty.defaults.layout = 'topLeft';
-        </script>
-    {% endcompress %}
+{% compress js %}
+<script type="text/javascript">
+    $.noty.defaults.layout = 'topLeft';
+</script>
+{% endcompress %}
 {% endblock %}
 
 {% block header %}{# No default header on the Homepage #}{% endblock %}
 
 {% block content %}
-    <aside class="intro">
-        <h3 class="title">What is Djagon?</h3>
-        <p>Djagon is browser-based multiplayer for
-            <a href="http://shop.mattel.com/family/index.jsp?categoryId=3784337" target="_blank">Uno</a> -
-            famous card game from Mattel.
-        </p>
-        <p>But why we say that it has flavor of madness?</p>
-        <p>
-            Because we play it by our own <a href="#" onclick="alert('Sorry, but we had no time to write them :('); return false;">crazy rules</a>
-            (don't worry, just a few differences).
-        </p>
-        <p>
-            <strong>We had too few time to implement all that we wanted. Excuse us for lot of bugs in gameplay :)</strong>
-        </p>
-    </aside>
+<aside class="intro">
+    <h3 class="title">What is Djagon?</h3>
 
-    <div class="cards">
-        <div class="one"></div>
-        <div class="two"></div>
-        <div class="three"></div>
-    </div>
+    <p>Djagon is browser-based multiplayer for
+        <a href="http://shop.mattel.com/family/index.jsp?categoryId=3784337" target="_blank">Uno</a> -
+        famous card game from Mattel.
+    </p>
 
-    <div class="actions">
-        <a href="{% url 'djagon:game-create' %}" class="create-game">Create game</a>
-        <a href="{% url 'djagon:game-random' %}" class="join-game">Join random game</a>
-    </div>
+    <p>But why we say that it has flavor of madness?</p>
+
+    <p>
+        Because we play it by our own <a href="#"
+                                         onclick="alert('Sorry, but we had no time to write them :('); return false;">crazy
+        rules</a>
+        (don't worry, just a few differences).
+    </p>
+
+    <p>
+        <strong>We had too few time to implement all that we wanted. Excuse us for lot of bugs in gameplay :)</strong>
+    </p>
+</aside>
+
+<div class="cards">
+    <div class="one"></div>
+    <div class="two"></div>
+    <div class="three"></div>
+</div>
+
+<div class="actions">
+    <a href="{% url 'djagon:game-create' %}" class="create-game">Create game</a>
+    <a href="{% url 'djagon:game-random' %}" class="join-game">Join random game</a>
+</div>
 {% endblock %}

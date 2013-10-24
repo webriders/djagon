@@ -1,5 +1,6 @@
 import random
 from source.storage import id_generator
+from source.storage.exceptions import PlayerDoesNotExist
 from source.uno.card import generate_cards
 from source.uno.exceptions import WrongTurnException
 from source.uno.game_states import StartState
@@ -23,6 +24,20 @@ class Game(object):
         self._direction = self.CLOCK_WISE
         self._deck_reversed_times = 0
 
+    # Sockets related
+    def find_player_by_session_id(self, session_id):
+        for player in self.players:
+            if player.session_id == session_id:
+                return player
+        raise PlayerDoesNotExist()
+
+    def find_player_by_id(self, id):
+        for player in self.players:
+            if player.player_id == id:
+                return player
+        raise PlayerDoesNotExist()
+
+    # Uno related
     @property
     def game_id(self):
         return self._game_id
@@ -137,6 +152,13 @@ class Game(object):
         # first card
         card = self.get_card_from_deck()
         self.state.perform_turn(self.current_player, card)
+
+    def draw_card(self, player):
+        if self.is_current_player(player):
+            card = self.get_card_from_deck()
+            player.cards.append(card)
+        else:
+            raise WrongTurnException()
 
     # delegated
     def perform_turn(self, player, card):

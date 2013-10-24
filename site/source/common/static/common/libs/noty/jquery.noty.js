@@ -23,7 +23,7 @@ if (typeof Object.create !== 'function') {
 
     var NotyObject = {
 
-        init:function (options) {
+        init: function (options) {
 
             // Mix in the passed in options with the default options
             this.options = $.extend({}, $.noty.defaults, options);
@@ -46,7 +46,7 @@ if (typeof Object.create !== 'function') {
             return this;
         }, // end init
 
-        _build:function () {
+        _build: function () {
 
             // Generating noty bar
             var $bar = $('<div class="noty_bar"></div>').attr('id', this.options.id);
@@ -87,7 +87,7 @@ if (typeof Object.create !== 'function') {
 
         }, // end _build
 
-        show:function () {
+        show: function () {
 
             var self = this;
 
@@ -148,7 +148,7 @@ if (typeof Object.create !== 'function') {
 
         }, // end show
 
-        close:function () {
+        close: function () {
 
             if (this.closed) return;
             if (this.$bar && this.$bar.hasClass('i-am-closing-now')) return;
@@ -194,7 +194,7 @@ if (typeof Object.create !== 'function') {
                     if ($.notyRenderer.getLayoutCountFor(self) == 0) $(self.options.layout.container.selector).remove();
 
                     // Make sure self.$bar has not been removed before attempting to remove it
-                    if (typeof self.$bar !== 'undefined' && self.$bar !== null ) {
+                    if (typeof self.$bar !== 'undefined' && self.$bar !== null) {
                         self.$bar.remove();
                         self.$bar = null;
                         self.closed = true;
@@ -211,14 +211,14 @@ if (typeof Object.create !== 'function') {
                         $.notyRenderer.render();
                     }
 
-					if (self.options.maxVisible > 0 && self.options.dismissQueue) {
-						$.notyRenderer.render();
-					}
+                    if (self.options.maxVisible > 0 && self.options.dismissQueue) {
+                        $.notyRenderer.render();
+                    }
                 })
 
         }, // end close
 
-        setText:function (text) {
+        setText: function (text) {
             if (!this.closed) {
                 this.options.text = text;
                 this.$bar.find('.noty_text').html(text);
@@ -226,7 +226,7 @@ if (typeof Object.create !== 'function') {
             return this;
         },
 
-        setType:function (type) {
+        setType: function (type) {
             if (!this.closed) {
                 this.options.type = type;
                 this.options.theme.style.apply(this);
@@ -235,7 +235,7 @@ if (typeof Object.create !== 'function') {
             return this;
         },
 
-        setTimeout:function (time) {
+        setTimeout: function (time) {
             if (!this.closed) {
                 var self = this;
                 this.options.timeout = time;
@@ -246,7 +246,7 @@ if (typeof Object.create !== 'function') {
             return this;
         },
 
-        stopPropagation:function (evt) {
+        stopPropagation: function (evt) {
             evt = evt || window.event;
             if (typeof evt.stopPropagation !== "undefined") {
                 evt.stopPropagation();
@@ -255,8 +255,8 @@ if (typeof Object.create !== 'function') {
             }
         },
 
-        closed:false,
-        shown:false
+        closed: false,
+        shown: false
 
     }; // end NotyObject
 
@@ -280,15 +280,15 @@ if (typeof Object.create !== 'function') {
 
         if ($.type(instance) === 'object') {
             if (instance.options.dismissQueue) {
-				if (instance.options.maxVisible > 0) {
-					if ($(instance.options.layout.container.selector + ' li').length < instance.options.maxVisible) {
-						$.notyRenderer.show($.noty.queue.shift());
-					} else {
+                if (instance.options.maxVisible > 0) {
+                    if ($(instance.options.layout.container.selector + ' li').length < instance.options.maxVisible) {
+                        $.notyRenderer.show($.noty.queue.shift());
+                    } else {
 
-					}
-				} else {
-					$.notyRenderer.show($.noty.queue.shift());
-				}
+                    }
+                } else {
+                    $.notyRenderer.show($.noty.queue.shift());
+                }
             } else {
                 if ($.noty.ontap) {
                     $.notyRenderer.show($.noty.queue.shift());
@@ -393,7 +393,7 @@ if (typeof Object.create !== 'function') {
             if (options)
                 options.text = text;
             else
-                options = {text:text};
+                options = {text: text};
 
             $.notyRenderer.init(options);
         };
@@ -404,36 +404,36 @@ if (typeof Object.create !== 'function') {
     };
 
     $.noty.defaults = {
-        layout:'top',
-        theme:'defaultTheme',
-        type:'alert',
-        text:'',
-        dismissQueue:true,
-        template:'<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
-        animation:{
-            open:{height:'toggle'},
-            close:{height:'toggle'},
-            easing:'swing',
-            speed:500
+        layout: 'top',
+        theme: 'defaultTheme',
+        type: 'alert',
+        text: '',
+        dismissQueue: true,
+        template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+        animation: {
+            open: {height: 'toggle'},
+            close: {height: 'toggle'},
+            easing: 'swing',
+            speed: 500
         },
-        timeout:false,
-        force:false,
-        modal:false,
-        maxVisible:5,
-        closeWith:['click'],
-        callback:{
-            onShow:function () {
+        timeout: false,
+        force: false,
+        modal: false,
+        maxVisible: 5,
+        closeWith: ['click'],
+        callback: {
+            onShow: function () {
             },
-            afterShow:function () {
+            afterShow: function () {
             },
-            onClose:function () {
+            onClose: function () {
             },
-            afterClose:function () {
+            afterClose: function () {
             },
-            onCloseClick:function () {
+            onCloseClick: function () {
             }
         },
-        buttons:false
+        buttons: false
     };
 
     $(window).resize(function () {
@@ -450,15 +450,15 @@ window.noty = function noty(options) {
     // This is for BC  -  Will be deleted on v2.2.0
     var using_old = 0
         , old_to_new = {
-            'animateOpen':'animation.open',
-            'animateClose':'animation.close',
-            'easing':'animation.easing',
-            'speed':'animation.speed',
-            'onShow':'callback.onShow',
-            'onShown':'callback.afterShow',
-            'onClose':'callback.onClose',
-            'onCloseClick':'callback.onCloseClick',
-            'onClosed':'callback.afterClose'
+            'animateOpen': 'animation.open',
+            'animateClose': 'animation.close',
+            'easing': 'animation.easing',
+            'speed': 'animation.speed',
+            'onShow': 'callback.onShow',
+            'onShown': 'callback.afterShow',
+            'onClose': 'callback.onClose',
+            'onCloseClick': 'callback.onCloseClick',
+            'onClosed': 'callback.afterClose'
         };
 
     jQuery.each(options, function (key, value) {

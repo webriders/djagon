@@ -8,7 +8,7 @@ socketio.sdjango.autodiscover()
 djagon_urlpatterns = patterns(
     '',
     url(r'^', include('home.urls')),
-    url(r'^game/', include('game.urls')),
+    url(r'^game/', include('ws_uno.urls')),
 )
 
 urlpatterns = patterns(

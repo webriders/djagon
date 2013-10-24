@@ -4,7 +4,6 @@ from source.___old_game.game import Game
 
 
 class GameMechanics(object):
-
     EVENT_INITIAL_STATE = 'initial_state'
     EVENT_GAME_RUNNING = 'game_running'
     EVENT_USER_MESSAGE = 'user_message'

@@ -2,20 +2,20 @@
 @import "helpers/colors";
 
 .page-container {
-    padding: 20px 20px 60px;
-    overflow: hidden;
-    @include box-sizing(border-box);
+  padding: 20px 20px 60px;
+  overflow: hidden;
+  @include box-sizing(border-box);
 }
 
 .page-footer {
-    padding: 20px 23px;
-    line-height: 20px;
+  padding: 20px 23px;
+  line-height: 20px;
 }
 
 .game-table {
-    width: 100%;
-    height: 100%;
-    border: 7px solid $dark-red;
-    border-radius: 20px;
-    @include box-sizing(border-box);
+  width: 100%;
+  height: 100%;
+  border: 7px solid $dark-red;
+  border-radius: 20px;
+  @include box-sizing(border-box);
 }

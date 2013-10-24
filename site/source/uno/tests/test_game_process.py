@@ -168,5 +168,48 @@ class TestUnoState(unittest.TestCase):
         self.assertIsInstance(self.game.state, UnoState)
 
 
+class TestDrawCard(unittest.TestCase):
+
+    def setUp(self):
+        self.game = Game("TEST_GAME")
+        self.player1 = Player("Player1")
+        self.player2 = Player("Player2")
+        self.player3 = Player("Player3")
+
+        self.player1._cards = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "2"),
+        ]
+        self.player2._cards = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "2"),
+        ]
+        self.player3._cards = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "2"),
+        ]
+
+        self.game._get_deck = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "3"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.game._put_deck = [
+            Card.factory(self.game, "green", "2")
+        ]
+
+        self.game.state = NormalState(self.game)
+        self.game.current_player = self.player1
+
+    def test_take_card_when_current(self):
+        self.game.draw_card(self.player1)
+        self.assertEqual(len(self.player1.cards), 3)
+        self.assertEqual(len(self.game.get_deck), 2)
+
+    def test_take_card_when_not_current_fails(self):
+        self.assertRaises(WrongTurnException, self.game.draw_card, self.player2)
+        self.assertEqual(len(self.player2.cards), 2)
+        self.assertEqual(len(self.game.get_deck), 3)
+
 if __name__ == '__main__':
     unittest.main()

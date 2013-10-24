@@ -62,7 +62,7 @@ class Game(object):
             player_id = self.user_sessions[sessid]
             return self.players[player_id]
         self.status = GameTable.STATUS_OPEN
-        default_name = "Player %s" % (self.players_number+1)
+        default_name = "Player %s" % (self.players_number + 1)
         player = Player(name=default_name)
         self.players[player.id] = player
         self.user_sessions[sessid] = player.id
@@ -97,7 +97,7 @@ class Game(object):
 
     def get_next_player(self):
         current_lead_index = self.players.keys().index(self.current_lead)
-        player_index = (current_lead_index+self.direction) % self.players_number
+        player_index = (current_lead_index + self.direction) % self.players_number
         return self.players[self.players.keys()[player_index]]
 
     def _lead_to_next_player(self):

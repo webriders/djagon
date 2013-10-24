@@ -1,14 +1,31 @@
+from django.utils.http import urlquote
 from source.storage import id_generator
 
 
 class Player(object):
+    AVATAR_URL = 'http://robohash.org/'
 
     def __init__(self, name):
         self._player_id = id_generator.new_id()
         self._name = name
         self._cards = []
         self._lamp = False
+        self._session_id = None
 
+    # Sockets related
+    @property
+    def session_id(self):
+        return self._session_id
+
+    @session_id.setter
+    def session_id(self, session_id):
+        self._session_id = session_id
+
+    @property
+    def avatar(self):
+        return self.AVATAR_URL + urlquote(self.name)
+
+    # Uno related
     @property
     def player_id(self):
         return self._player_id

@@ -5,34 +5,34 @@ $.noty.defaults.layout = 'topCenter';
 $.noty.defaults.timeout = 1500;
 
 djagon.messages = {
-    alert: function(text) {
+    alert: function (text) {
         return this.message({text: text});
     },
 
-    info: function(text) {
+    info: function (text) {
         return this.message({type: 'information', text: text});
     },
 
-    warning: function(text) {
+    warning: function (text) {
         return this.message({type: 'warning', text: text});
     },
 
-    error: function(text) {
+    error: function (text) {
         return this.message({type: 'error', text: text});
     },
 
-    success: function(text) {
+    success: function (text) {
         return this.message({type: 'success', text: text});
     },
 
-    message: function(cfg) {
+    message: function (cfg) {
         return noty(cfg);
     }
 };
 
 // Handle all AJAX errors
 $.ajaxSetup({
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
         // we ignore aborted XHR or when user press F5 while XHR is in progress
         if (status == 'abort' || xhr.readyState == 0)
             return;

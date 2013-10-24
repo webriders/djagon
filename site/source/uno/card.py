@@ -6,17 +6,17 @@ class Card(object):
     SCORE_WILD = 20
 
     def __init__(self, color=None, value=None, action=None):
-        self._id = id_generator.new_id()
+        self._card_id = id_generator.new_id()
         self.color = color
         self.value = value
         self.action = action
 
     @property
-    def id(self):
-        return self._id
+    def card_id(self):
+        return self._card_id
 
     def is_identical(self, card):
-        return self.id == card.id
+        return self.card_id == card.card_id
 
     __eq__ = is_identical
 
@@ -141,4 +141,10 @@ def generate_cards(game):
         cards.append(Card.factory(game, x["color"], x["value"]))
 
     return cards
+
+
+def get_card_by_id(cards, needle_card_id):
+    for card in cards:
+        if card.card_id == needle_card_id:
+            return card
 

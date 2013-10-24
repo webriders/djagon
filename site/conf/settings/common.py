@@ -57,19 +57,23 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # djagon source
-    'common',
-    'home',
-    'sockets',
-    'storage',
-    'uno',
-    'ws_uno',
-
     # third-party source
     'south',
     'compressor',
     'django.contrib.admin',
 )
+
+UNO_APPS = (
+    # djagon source
+    'source.common',
+    'source.home',
+    'source.sockets',
+    'source.storage',
+    'source.uno',
+    'source.ws_uno',
+)
+
+INSTALLED_APPS += UNO_APPS
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 

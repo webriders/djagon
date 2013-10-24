@@ -28,15 +28,43 @@ def game_state(game, player_id):
 
 def initial_game_state(game, player_id):
     assert isinstance(game, Game)
-    players = [p.get_data(player_id) for p in game.players.values()]
+
+    players = []
+    for p in game.players:
+        players.append({
+            "id": p.player_id,
+            "name": p.name,
+            "avatar": p.avatar,
+            "lamp": p.lamp
+        })
+
+    # don't show lamp when only one player in game
     if len(players) == 1:
         del players[0]["lamp"]
+
     return {
         'players_list': players,
     }
 
 
-def game_state_frontend(game):
+def send_game_initial_frontend(socket, game):
+    for sessid, socket in socket.server.sockets.iteritems():
+        if 'game_id' not in socket.session:
+            continue
+        if game.game_id == socket.session['game_id']:
+            player_id = socket.session['player_id']
+            data = initial_game_state(game, player_id)
+
+            pkt = {
+                "type": "event",
+                "name": EVENT_INITIAL_STATE,
+                "args": data,
+                "endpoint": NS_NAME
+            }
+            socket.send_packet(pkt)
+
+
+def send_game_state_frontend(socket, game):
     for sessid, socket in socket.server.sockets.iteritems():
         if 'game_id' not in socket.session:
             continue

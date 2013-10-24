@@ -1,19 +1,19 @@
 {% if messages %}
-    <script type="text/javascript">
-        {% for message in messages %}
-            {% with message|escapejs as message_text %}
-                {% if 'success' in message.tags %}
-                    djagon.messages.success("{{ message_text }}");
-                {% elif 'error' in message.tags %}
-                    djagon.messages.error("{{ message_text }}");
-                {% elif 'info' in message.tags %}
-                    djagon.messages.info("{{ message_text }}");
-                {% elif 'warning' in message.tags %}
-                    djagon.messages.warning("{{ message_text }}");
-                {% else %}
-                    djagon.messages.alert("{{ message_text }}");
-                {% endif %}
-            {% endwith %}
-        {% endfor %}
-    </script>
+<script type="text/javascript">
+    {% for message in messages %}
+        {% with message|escapejs as message_text %}
+            {% if 'success' in message.tags %}
+                djagon.messages.success("{{ message_text }}");
+            {% elif 'error' in message.tags %}
+                djagon.messages.error("{{ message_text }}");
+            {% elif 'info' in message.tags %}
+                djagon.messages.info("{{ message_text }}");
+            {% elif 'warning' in message.tags %}
+                djagon.messages.warning("{{ message_text }}");
+            {% else %}
+                djagon.messages.alert("{{ message_text }}");
+            {% endif %}
+        {% endwith %}
+    {% endfor %}
+</script>
 {% endif %}

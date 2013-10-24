@@ -1,11 +1,14 @@
 from socketio.mixins import RoomsMixin
 from socketio.namespace import BaseNamespace
 from socketio.sdjango import namespace
-from source.sockets.player import SocketPlayer
+from source.sockets.utils import send_game_state_frontend, send_game_initial_frontend
 from source.storage.exceptions import GameDoesNotExist, PlayerDoesNotExist
-from source.storage.models import StoredGame
 from source.storage import utils
+from source.storage.models import StoredGame
+from source.uno.card import get_card_by_id
 from source.uno.exceptions import WrongTurnException
+from source.uno.game import Game
+from source.uno.player import Player
 
 
 class UnoRoomsMixin(RoomsMixin):
@@ -31,9 +34,19 @@ class GameNamespace(BaseNamespace, UnoRoomsMixin):
     def on_join_game(self, game_id, sessid):
         try:
             game, state = utils.fetch_game(game_id)
-            if not "player" in self.session:
-                sock_player = SocketPlayer(sessid, game)
-                self.session["player"] = sock_player
+            self.session["game_id"] = game.game_id
+
+            if not "player_id" in self.session:
+                new_player = Player("Player" + str(len(game.players) + 1))
+                new_player.session_id = sessid
+                self.session["player_id"] = new_player.player_id
+                try:
+                    game.find_player_by_id(self.session["player_id"])
+                except PlayerDoesNotExist:
+                    game.players.append(new_player)
+
+            utils.save_game(game, state)
+            send_game_initial_frontend(self.socket, game)
 
         except GameDoesNotExist:
             pass
@@ -42,69 +55,70 @@ class GameNamespace(BaseNamespace, UnoRoomsMixin):
         try:
             game, state = utils.fetch_game(game_id)
 
-            player = game.players[self.session['player_id']]
+            player = game.find_player_by_id(self.session['player_id'])
             player.lamp = True
 
-            utils.save_game(game_id, game)
-
-            game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
+            utils.save_game(game, state)
 
             are_all_players_confirmed = True
-            for x in game.players:
-                if not game.players[x].lamp:
+            for player in game.players:
+                if not player.lamp:
                     are_all_players_confirmed = False
 
             if not are_all_players_confirmed:
-                game_mechanics._send_initial_game_state()
+                send_game_initial_frontend(self.socket, game)
             else:
                 game.start()
-                game_mechanics._send_game_running()
+                utils.save_game(game, StoredGame.STATE_ACTIVE)
+                send_game_state_frontend(self.socket, game)
 
         except GameDoesNotExist:
+            pass
+        except PlayerDoesNotExist:
             pass
 
     def on_start_unconfirm(self, game_id):
         try:
             game, state = utils.fetch_game(game_id)
 
-            player = game.players[self.session['player_id']]
-            player.lamp = False
-            game.save()
+            player = game.find_player_by_id(self.session['player_id'])
+            player.lamp = True
 
-            game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-            game_mechanics._send_initial_game_state()
+            utils.save_game(game, state)
+
+            send_game_initial_frontend(self.socket, game)
         except GameDoesNotExist:
+            pass
+        except PlayerDoesNotExist:
             pass
 
     def on_make_turn(self, game_id, card_id):
         try:
-            game = StoredGame.get_game(game_id)
-            if game is None:
-                return
+            game, state = utils.fetch_game(game_id)
 
-            player = game.players[self.session['player_id']]
+            player = game.find_player_by_id(self.session['player_id'])
             card = get_card_by_id(player.hand, card_id)
-            if not card:
-                card = get_card_by_id(game.deck.stack, card_id)
 
-            game_mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-            game_mechanics.make_turn(player, card)
+            game.perform_turn(player, card)
 
+            utils.save_game(game, state)
+
+            send_game_state_frontend(self.socket, game)
         except GameDoesNotExist:
             pass
         except WrongTurnException:
             pass
 
-    def on_draw_card(self):
+    def on_draw_card(self, game_id):
         try:
-            game = StoredGame.get_game(self.session.get('game_id'))
-            player = game.players.get(self.session.get('player_id'))
+            game, state = utils.fetch_game(game_id)
 
-            if not player or not game:
-                return
+            player = game.find_player_by_id(self.session['player_id'])
+            game.draw_card(player)
 
-            mechanics = GameMechanics(game, self.socket, self.session, self.ns_name)
-            mechanics.on_draw_card(player)
+            utils.save_game(game, state)
+
+            send_game_state_frontend(self.socket, game)
         except GameDoesNotExist:
             pass
         except PlayerDoesNotExist:

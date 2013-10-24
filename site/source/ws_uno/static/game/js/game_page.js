@@ -4,7 +4,7 @@ djagon.game = djagon.game || {};
 djagon.game.page = {
     game: null,
 
-    init: function() {
+    init: function () {
         var cnt = $('#game-table');
         this.game = new djagon.game.Game({
             container: cnt,
@@ -14,6 +14,6 @@ djagon.game.page = {
     }
 };
 
-$(function() {
+$(function () {
     djagon.game.page.init();
 });

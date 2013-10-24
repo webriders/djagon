@@ -1,9 +1,9 @@
 @mixin keyframes($name) {
-    @keyframes $name {
-        @content;
-    }
+  @keyframes $name {
+    @content;
+  }
 
-    @-webkit-keyframes $name {
-        @content;
-    }
+  @-webkit-keyframes $name {
+    @content;
+  }
 }
