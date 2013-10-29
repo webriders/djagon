@@ -158,6 +158,11 @@ class Game(object):
         if self.is_current_player(player):
             card = self.get_card_from_deck()
             player.cards.append(card)
+
+            top_card = self.put_deck[-1]
+            have_that_card = any([card.can_put_on(top_card) for card in player.cards])
+            if not have_that_card:
+                self.move_to_next_player()
         else:
             raise WrongTurnException()
 

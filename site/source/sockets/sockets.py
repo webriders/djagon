@@ -44,10 +44,7 @@ class GameNamespace(BaseNamespace):
 
             utils.save_game(game, state)
 
-            are_all_players_confirmed = True
-            for player in game.players:
-                if not player.lamp:
-                    are_all_players_confirmed = False
+            are_all_players_confirmed = all([player.lamp for player in game.players])
 
             if not are_all_players_confirmed:
                 send_game_state_frontend(self.socket, game, state)
@@ -103,5 +100,8 @@ class GameNamespace(BaseNamespace):
             utils.save_game(game, state)
 
             send_game_state_frontend(self.socket, game, state)
+        except WrongTurnException:
+            send_user_message(self.socket, "error", "It's not your turn")
         except (GameDoesNotExist, PlayerDoesNotExist):
             pass
+

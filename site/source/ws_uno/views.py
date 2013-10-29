@@ -58,6 +58,8 @@ class PlayGameView(TemplateView):
             messages.warning(request, "This game has already been started")
             return HttpResponseRedirect(reverse('djagon:home'))
 
+        utils.save_game(game, StoredGame.STATE_OPEN)
+
         return super(PlayGameView, self).get(self, request, *args, **kwargs)
 
 
@@ -69,7 +71,7 @@ class JoinRandomGameView(RedirectView):
 
     def get_redirect_url(self, **kwargs):
         try:
-            game = utils.fetch_any_game()
+            game, state = utils.fetch_any_game()
             return reverse('djagon:game-play', args=(game.game_id,))
         except NoOpenedGames:
             messages.warning(self.request, "There are no open games. Create yours!")
