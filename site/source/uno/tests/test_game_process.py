@@ -23,8 +23,14 @@ class TestGameStart(unittest.TestCase):
 
     def test_5_cards_given_to_players(self):
         self.assertEqual(len(self.game.previous_player.cards), 4)
+        self.assertEqual(len(self.game.get_nth_next_player(1).cards), 5)
         self.assertEqual(len(self.game.get_nth_next_player(2).cards), 5)
-        self.assertEqual(len(self.game.get_nth_next_player(3).cards), 5)
+
+    def test_5_cards_given_to_players_on_game_restart(self):
+        self.game.start_game()
+        self.assertEqual(len(self.game.previous_player.cards), 4)
+        self.assertEqual(len(self.game.get_nth_next_player(1).cards), 5)
+        self.assertEqual(len(self.game.get_nth_next_player(2).cards), 5)
 
     def test_one_card_opened(self):
         self.assertEqual(len(self.game.put_deck), 1)

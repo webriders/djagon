@@ -165,6 +165,101 @@ class TestReverse(unittest.TestCase):
         self.assertEqual(self.game.current_player, self.player1)
 
 
+class TestSkip(unittest.TestCase):
+    def setUp(self):
+        self.game = Game("TEST_GAME")
+
+        self.player1 = Player("Player1")
+        self.player2 = Player("Player2")
+        self.player3 = Player("Player3")
+
+        self.player1._cards = [
+            Card.factory(self.game, "green", "skip"),
+            Card.factory(self.game, "red", "3"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.player2._cards = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "skip"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.player3._cards = [
+            Card.factory(self.game, "blue", "skip"),
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "3")
+        ]
+
+        self.game.add_player(self.player1)
+        self.game.add_player(self.player2)
+        self.game.add_player(self.player3)
+
+        self.game._get_deck = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "3"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.game._put_deck = [
+            Card.factory(self.game, "green", "2")
+        ]
+
+        self.game.state = NormalState(self.game)
+
+    def test_skip_card(self):
+        self.game.current_player = self.player1
+        self.game.perform_turn(self.player1, self.player1.cards[0])
+        self.assertEqual(len(self.game.put_deck), 2)
+        self.assertEqual(self.game.current_player, self.player3)
+        self.game.perform_turn(self.player3, self.player3.cards[0])
+        self.assertEqual(self.game.current_player, self.player2)
+
+
+class TestTakeCard(unittest.TestCase):
+    def setUp(self):
+        self.game = Game("TEST_GAME")
+
+        self.player1 = Player("Player1")
+        self.player2 = Player("Player2")
+        self.player3 = Player("Player3")
+
+        self.player1._cards = [
+            Card.factory(self.game, "green", "draw-two"),
+            Card.factory(self.game, "red", "3"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.player2._cards = [
+            Card.factory(self.game, "green", "draw-two"),
+            Card.factory(self.game, "red", "skip"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.player3._cards = [
+            Card.factory(self.game, "blue", "draw-two"),
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "3")
+        ]
+
+        self.game.add_player(self.player1)
+        self.game.add_player(self.player2)
+        self.game.add_player(self.player3)
+
+        self.game._get_deck = [
+            Card.factory(self.game, "green", "2"),
+            Card.factory(self.game, "red", "3"),
+            Card.factory(self.game, "blue", "4")
+        ]
+        self.game._put_deck = [
+            Card.factory(self.game, "green", "2")
+        ]
+
+        self.game.state = NormalState(self.game)
+
+    def test_skip_card(self):
+        self.game.current_player = self.player1
+        self.game.perform_turn(self.player1, self.player1.cards[0])
+        self.assertEqual(len(self.game.put_deck), 2)
+        self.assertEqual(self.game.current_player, self.player2)
+        self.assertEqual(len(self.player2.cards), 5)
+
+
 class TestBlackCards(unittest.TestCase):
     def setUp(self):
         self.game = Game("TEST_GAME")

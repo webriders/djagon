@@ -113,6 +113,7 @@ def send_game_score(socket, game):
     game_score = game.game_score()
     for row in game_score:
         send_broadcast_user_message(
+            socket,
             "info",
             "Player {player} scored {score} points".format(**row)
         )

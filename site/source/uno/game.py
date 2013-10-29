@@ -141,6 +141,7 @@ class Game(object):
             else:
                 num_of_cards = 5
 
+            player.cards = []
             for x in range(num_of_cards):
                 card = self.get_card_from_deck()
                 player.cards.append(card)

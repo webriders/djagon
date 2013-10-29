@@ -106,10 +106,10 @@ class TakeAndSkipAction(DefaultCardAction):
             if "cards_to_take" in self._punishment[x]:
                 for y in range(self._punishment[x]["cards_to_take"]):
                     player.cards.append(self._game.get_card_from_deck())
-            if "skip" in self._punishment[x]:
+            if "skip" in self._punishment[x] and self._punishment[x]["skip"]:
                 nth += 1
 
-        self._game.move_to_next_nth_player(nth)
+        self._game.move_to_next_nth_player(nth + 1)
 
 
 class ReverseAction(DefaultCardAction):
@@ -134,11 +134,11 @@ def generate_cards(game):
         for val in special_values:
             cards.append(Card.factory(game, col, val))
 
-    for x in wild_cards:
-        cards.append(Card.factory(game, x["color"], x["value"]))
-
-    for x in draw_four_cards:
-        cards.append(Card.factory(game, x["color"], x["value"]))
+    #for x in wild_cards:
+    #    cards.append(Card.factory(game, x["color"], x["value"]))
+    #
+    #for x in draw_four_cards:
+    #    cards.append(Card.factory(game, x["color"], x["value"]))
 
     return cards
 
