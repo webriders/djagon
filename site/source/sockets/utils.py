@@ -1,3 +1,4 @@
+from source.storage.models import StoredGame
 from source.uno.game import Game
 from source.uno.game_states import UnoState
 
@@ -91,7 +92,7 @@ def send_game_initial_frontend(socket, game):
             socket.send_packet(pkt)
 
 
-def send_game_state_frontend(socket, game):
+def send_game_running_state_frontend(socket, game):
     for sessid, socket in socket.server.sockets.iteritems():
         if 'game_id' not in socket.session:
             continue
@@ -106,3 +107,37 @@ def send_game_state_frontend(socket, game):
                 "endpoint": NS_NAME
             }
             socket.send_packet(pkt)
+
+
+def send_game_score(socket, game):
+    game_score = game.game_score()
+    for row in game_score:
+        send_broadcast_user_message(
+            "info",
+            "Player {player} scored {score} points".format(**row)
+        )
+
+
+def send_game_state_frontend(socket, game, state):
+    if state == StoredGame.STATE_ACTIVE:
+        send_game_running_state_frontend(socket, game)
+    else:
+        send_game_initial_frontend(socket, game)
+
+
+def send_broadcast_user_message(socket, message_type, message_content):
+    for sessid, socket in socket.server.sockets.iteritems():
+        send_user_message(socket, message_type, message_content)
+
+
+def send_user_message(socket, message_type, message_content):
+    pkt = {
+        "type": "event",
+        "name": EVENT_USER_MESSAGE,
+        "args": {
+            "type": message_type,
+            "msg": message_content
+        },
+        "endpoint": NS_NAME
+    }
+    socket.send_packet(pkt)

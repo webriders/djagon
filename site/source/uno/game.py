@@ -160,6 +160,18 @@ class Game(object):
         else:
             raise WrongTurnException()
 
+    def game_score(self):
+        res = []
+        for player in self.players:
+            for card in player.cards:
+                player.score += card.score
+
+            res.append({
+                "player": player.name,
+                "score": player.score
+            })
+        return res
+
     # delegated
     def perform_turn(self, player, card):
         if self.is_current_player(player) and player.has_card(card) and card.can_put_on(self.put_deck[-1]):

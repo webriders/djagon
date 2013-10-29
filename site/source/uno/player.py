@@ -11,6 +11,7 @@ class Player(object):
         self._cards = []
         self._lamp = False
         self._session_id = None
+        self._total_score = 0
 
     # Sockets related
     @property
@@ -36,6 +37,14 @@ class Player(object):
     @property
     def name(self):
         return self._name
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, x):
+        self._score = x
 
     @property
     def cards(self):
