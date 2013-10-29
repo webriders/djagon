@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.views.generic.base import RedirectView, TemplateView
-from source.storage.exceptions import GameDoesNotExist, NoOpenedGames
+from source.storage.exceptions import GameDoesNotExist, NoOpenedGames, PlayerDoesNotExist
 from source.storage.models import StoredGame
 from source.storage import utils
 from source.uno.game import Game
@@ -43,8 +43,15 @@ class PlayGameView(TemplateView):
             messages.warning(request, "Players number is limited in this game. Please, create yours!")
             return HttpResponseRedirect(reverse('djagon:home'))
 
+        player = None
+        if sessid:
+            try:
+                player = game.find_player_by_session_id(sessid)
+            except PlayerDoesNotExist as e:
+                pass
+
         if game_state == StoredGame.STATE_ACTIVE:
-            if not sessid or not game.resolve().user_is_member(sessid):
+            if not player:
                 messages.warning(request, "This game has already been started")
                 return HttpResponseRedirect(reverse('djagon:home'))
         elif not game_state in [StoredGame.STATE_OPEN, StoredGame.STATE_IDLE]:

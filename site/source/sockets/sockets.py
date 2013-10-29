@@ -68,7 +68,7 @@ class GameNamespace(BaseNamespace, UnoRoomsMixin):
             if not are_all_players_confirmed:
                 send_game_initial_frontend(self.socket, game)
             else:
-                game.start()
+                game.start_game()
                 utils.save_game(game, StoredGame.STATE_ACTIVE)
                 send_game_state_frontend(self.socket, game)
 
@@ -97,7 +97,7 @@ class GameNamespace(BaseNamespace, UnoRoomsMixin):
             game, state = utils.fetch_game(game_id)
 
             player = game.find_player_by_id(self.session['player_id'])
-            card = get_card_by_id(player.hand, card_id)
+            card = get_card_by_id(player.cards, card_id)
 
             game.perform_turn(player, card)
 

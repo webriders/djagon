@@ -553,6 +553,6 @@ djagon.game.Game.prototype = {
 
     takeCard: function () {
         console.log('emit draw_card');
-        this.socket.emit("draw_card");
+        this.socket.emit("draw_card", this.gameId);
     }
 };
