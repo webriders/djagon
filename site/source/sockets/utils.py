@@ -1,4 +1,5 @@
 from source.storage.models import StoredGame
+from source.storage import utils as storage_utils
 from source.uno.game import Game
 from source.uno.game_states import UnoState
 
@@ -142,3 +143,29 @@ def send_user_message(socket, message_type, message_content):
         "endpoint": NS_NAME
     }
     socket.send_packet(pkt)
+
+
+# hack to check when players close browser window
+def remove_players_who_leave(socket, game, state):
+    players_still_here = set([socket.session["player_id"] for sessid, socket in socket.server.sockets.iteritems() if
+                              "player_id" in socket.session])
+    players_to_remove = []
+    for player in game.players:
+        if not player.player_id in players_still_here:
+            players_to_remove.append(player)
+
+    print game.game_id
+    print players_still_here
+    print players_to_remove
+    for player in players_to_remove:
+        game.remove_player(player)
+
+    if len(game.players) == 1:
+        game.reset_game()
+        return game, StoredGame.STATE_OPEN
+
+    if len(game.players) == 0:
+        return game, StoredGame.STATE_CLOSED
+
+    return game, state
+

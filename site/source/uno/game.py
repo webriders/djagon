@@ -128,6 +128,12 @@ class Game(object):
 
         self._players.remove(player)
 
+    def reset_game(self):
+        for player in self.players:
+            player.cards = []
+            player.score = 0
+            player.lamp = False
+
     def start_game(self):
         self.current_player = random.choice(self._players)
         self._put_deck = []
